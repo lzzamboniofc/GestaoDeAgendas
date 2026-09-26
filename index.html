@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#3b2a23" />
+  <meta name="description" content="Painel de gestão mobile-first para agenda, clientes e financeiro." />
+  <title>Gestão — Agenda e Financeiro</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
+    <div class="login-shell">
+      <div class="login-brand-panel" aria-hidden="true">
+        <div class="login-brand-mark" id="loginBrandMark">G</div>
+        <div class="login-brand-copy">
+          <p class="eyebrow">Gestão</p>
+          <h1>Seu dia organizado, sem papel.</h1>
+          <p>Agenda, clientes e financeiro em um único painel.</p>
+        </div>
+        <div class="login-brand-foot">Um espaço simples para organizar sua rotina.</div>
+      </div>
+
+      <div class="login-form-panel">
+        <form class="login-form" id="loginForm" novalidate>
+          <div class="login-mobile-mark" aria-hidden="true">G</div>
+          <p class="eyebrow">Acesso ao painel</p>
+          <h2 id="loginTitle">Entre na sua conta.</h2>
+          <p class="login-intro">Use um dos acessos autorizados para abrir o painel.</p>
+
+          <div class="login-fields">
+            <label>
+              <span>Usuário</span>
+              <div class="login-input-wrap">
+                <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                <input id="loginUser" type="text" autocomplete="username" required placeholder="Digite seu usuário" />
+              </div>
+            </label>
+            <label>
+              <span>Senha</span>
+              <div class="login-input-wrap">
+                <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Digite sua senha" />
+                <button class="login-password-toggle" id="togglePasswordBtn" type="button" aria-label="Mostrar senha">
+                  <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+                </button>
+              </div>
+            </label>
+          </div>
+
+          <label class="login-remember">
+            <input id="rememberLogin" type="checkbox" checked />
+            <span>Manter acesso neste dispositivo</span>
+          </label>
+
+          <p class="login-error" id="loginError" role="alert" aria-live="polite"></p>
+          <button class="login-submit" type="submit">Entrar no painel</button>
+          <div class="first-access-box" id="firstAccessBox" hidden>
+            <span>Primeiro acesso da proprietária?</span>
+            <button type="button" class="first-access-button" id="openOnboardingBtn">Configurar meu espaço</button>
+          </div>
+          <p class="login-security-note">Acesso restrito a contas autorizadas.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="onboarding-screen" id="onboardingScreen" hidden aria-labelledby="onboardingTitle">
+    <div class="onboarding-shell">
+      <div class="onboarding-copy">
+        <div class="onboarding-mark">G</div>
+        <p class="eyebrow">Primeiro acesso</p>
+        <h1>Configure seu espaço.</h1>
+        <p>O nome escolhido aqui passa a identificar o painel, mensagens e rotina do negócio.</p>
+        <div class="onboarding-points">
+          <span><i>1</i> Nome do negócio</span>
+          <span><i>2</i> Conta da proprietária</span>
+          <span><i>3</i> Painel pronto para usar</span>
+        </div>
+      </div>
+      <div class="onboarding-form-panel">
+        <form class="onboarding-form" id="onboardingForm" novalidate>
+          <div class="dialog-heading onboarding-heading">
+            <div><p class="eyebrow">Configuração inicial</p><h2 id="onboardingTitle">Crie o primeiro acesso.</h2></div>
+            <button type="button" class="icon-button" id="closeOnboardingBtn" aria-label="Voltar ao login">×</button>
+          </div>
+          <div class="form-stack">
+            <label>Nome do negócio<input id="workspaceName" type="text" required maxlength="60" placeholder="Ex.: Meu Studio" /></label>
+            <label>Nome da profissional<input id="ownerDisplayName" type="text" required maxlength="60" placeholder="Seu nome" /></label>
+            <label>WhatsApp <span class="optional-label">opcional</span><input id="workspaceWhatsapp" type="tel" placeholder="(11) 99999-9999" /></label>
+            <label>Usuário de acesso<input id="ownerUsername" type="text" required minlength="3" maxlength="30" autocomplete="username" placeholder="Crie um usuário" /></label>
+            <div class="form-row">
+              <label>Senha<input id="ownerPassword" type="password" required minlength="4" autocomplete="new-password" placeholder="Mínimo 4 caracteres" /></label>
+              <label>Confirmar senha<input id="ownerPasswordConfirm" type="password" required minlength="4" autocomplete="new-password" placeholder="Repita a senha" /></label>
+            </div>
+          </div>
+          <p class="login-error onboarding-error" id="onboardingError" role="alert" aria-live="polite"></p>
+          <div class="dialog-actions onboarding-actions">
+            <button type="button" class="secondary-action" id="cancelOnboardingBtn">Voltar</button>
+            <button type="submit" class="primary-action">Criar espaço e entrar</button>
+          </div>
+          <p class="login-security-note">Depois deste cadastro, novos cadastros ficam bloqueados neste MVP.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div class="app-shell" id="appShell" hidden>
+    <aside class="desktop-rail" aria-label="Navegação principal">
+      <div class="brand-mark" id="desktopBrandMark" aria-label="Negócio"><span>G</span></div>
+      <nav class="rail-nav">
+        <button class="nav-item is-active" data-view="today" aria-label="Hoje" title="Hoje">
+          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Hoje</span>
+        </button>
+        <button class="nav-item" data-view="agenda" aria-label="Agenda" title="Agenda">
+          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span><span>Agenda</span>
+        </button>
+        <button class="nav-item" data-view="clients" aria-label="Clientes" title="Clientes">
+          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Clientes</span>
+        </button>
+        <button class="nav-item" data-view="finance" aria-label="Financeiro" title="Financeiro">
+          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M3 9h18M16 14h2"/><path d="M5 6V4h12"/></svg></span><span>Financeiro</span>
+        </button>
+        <button class="nav-item" data-view="settings" aria-label="Ajustes" title="Ajustes">
+          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h7M15 18h5"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="13" cy="18" r="2"/></svg></span><span>Ajustes</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-title">
+          <button type="button" class="brand-name-button" id="brandSettingsBtn" aria-label="Abrir ajustes"><span class="eyebrow" id="brandNameLabel">Gestão</span></button>
+          <div class="topbar-view-row">
+            <h1 id="viewTitle">Hoje</h1>
+            <span class="topbar-date" id="todayDate"></span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="primary-action topbar-new-appointment" id="topbarNewAppointment" data-action="new-appointment"><span aria-hidden="true">+</span><span class="topbar-action-full">Novo atendimento</span><span class="topbar-action-compact">Atendimento</span></button>
+          <button class="avatar-button" id="profileBtn" aria-label="Perfil">N</button>
+        </div>
+      </header>
+
+      <section class="view is-visible" id="view-today" data-title="Hoje">
+        <section class="day-summary day-summary-home" aria-label="Resumo do dia">
+          <article><span class="summary-label">Atendimentos</span><strong id="summaryAppointments">0</strong><small id="summaryPending">0 pendentes</small></article>
+          <article><span class="summary-label">Previsto hoje</span><strong id="summaryRevenue">R$ 0</strong><small>pelos horários marcados</small></article>
+          <article><span class="summary-label">Próximo horário</span><strong id="summaryNext">—</strong><small id="summaryNextClient">Sem atendimento</small></article>
+        </section>
+
+        <div class="content-grid">
+          <section class="schedule-panel">
+            <div class="section-heading"><div><p class="eyebrow">Agenda de hoje</p><h3>Próximos horários</h3></div><button class="text-button" data-view-jump="agenda">Ver agenda</button></div>
+            <div class="timeline" id="todayTimeline"></div>
+          </section>
+          <aside class="insights-panel">
+            <section class="insight-block attention-block">
+              <div class="section-heading compact"><div><p class="eyebrow">Retenção</p><h3>Clientes para chamar</h3></div><span class="count-badge" id="returnCount">0</span></div>
+              <div id="returnClients" class="compact-list"></div>
+            </section>
+            <section class="insight-block">
+              <div class="section-heading compact"><div><p class="eyebrow">Amanhã</p><h3>Primeiro atendimento</h3></div></div>
+              <div id="tomorrowPreview" class="tomorrow-preview"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-agenda" data-title="Agenda">
+        <div class="agenda-toolbar">
+          <div class="date-switcher">
+            <button class="icon-button" id="prevDayBtn" aria-label="Dia anterior">←</button>
+            <button class="date-chip" id="agendaDateBtn"><span id="agendaDateLabel"></span></button>
+            <button class="icon-button" id="nextDayBtn" aria-label="Próximo dia">→</button>
+          </div>
+          <button class="primary-action" data-action="new-appointment">+ Agendar</button>
+        </div>
+        <section class="agenda-day agenda-day-full">
+          <div class="agenda-status-row">
+            <span><i class="status-dot confirmed"></i> Confirmado</span>
+            <span><i class="status-dot waiting"></i> Aguardando</span>
+            <span><i class="status-dot done"></i> Concluído</span>
+            <span><i class="status-dot cancelled"></i> Cancelado</span>
+          </div>
+          <div id="agendaTimeline" class="timeline agenda-timeline"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-clients" data-title="Clientes">
+        <div class="page-toolbar">
+          <label class="search-field"><span><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><input id="clientSearch" type="search" placeholder="Buscar cliente ou telefone" /></label>
+          <button class="primary-action" data-action="new-client">+ Nova cliente</button>
+        </div>
+        <div class="clients-layout">
+          <section class="client-list-panel"><div class="client-list" id="clientList"></div></section>
+          <section class="client-detail-panel" id="clientDetail"></section>
+        </div>
+      </section>
+
+      <section class="view" id="view-finance" data-title="Financeiro">
+        <div class="finance-intro"><div><p class="eyebrow">Mês atual</p><h2>Entrou, ficou pendente ou saiu.</h2></div><button class="secondary-action" id="newExpenseBtn">+ Registrar despesa</button></div>
+
+        <section class="finance-dashboard-hero">
+          <div class="finance-hero-copy collapsible-section" data-collapse-key="overview">
+            <div class="finance-block-top">
+              <p class="eyebrow" id="financeMonthLabel">Resumo do mês</p>
+              <button class="collapse-toggle collapse-toggle-dark" type="button" data-collapse-toggle="overview" aria-expanded="true" aria-label="Recolher resumo do mês">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </button>
+            </div>
+            <div class="collapsible-content">
+              <span class="finance-hero-kicker">Resultado do período</span>
+              <strong class="finance-hero-value" id="financeHeroNet">R$ 0</strong>
+              <p class="finance-hero-status" id="financeHeroStatus">Carregando resumo financeiro...</p>
+              <div class="finance-hero-chips">
+                <span class="hero-chip-income"><small>Recebido</small><strong id="financeHeroRevenue">R$ 0</strong></span>
+                <span class="hero-chip-expense"><small>Despesas</small><strong id="financeHeroExpenses">R$ 0</strong></span>
+                <span class="hero-chip-pending"><small>Pendente</small><strong id="financeHeroPending">R$ 0</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="finance-chart-card collapsible-section" data-collapse-key="chart">
+            <div class="finance-chart-heading">
+              <div>
+                <p class="eyebrow">Movimento do mês</p>
+                <h3>Entradas x despesas</h3>
+              </div>
+              <div class="finance-heading-actions">
+                <div class="finance-chart-legend" aria-label="Legenda do gráfico">
+                  <span><i class="legend-income"></i>Entradas</span>
+                  <span><i class="legend-expense"></i>Despesas</span>
+                </div>
+                <button class="collapse-toggle" type="button" data-collapse-toggle="chart" aria-expanded="true" aria-label="Recolher gráfico financeiro">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="collapsible-content">
+              <div class="finance-week-chart" id="financeWeekChart" aria-label="Gráfico semanal de entradas e despesas"></div>
+              <div class="finance-week-values" id="financeWeekValues" aria-label="Valores por período"></div>
+            </div>
+          </div>
+        </section>
+        <section class="finance-summary-section collapsible-section" data-collapse-key="indicators">
+          <div class="finance-section-header">
+            <div><p class="eyebrow">Visão rápida</p><h3>Indicadores do mês</h3></div>
+            <button class="collapse-toggle" type="button" data-collapse-toggle="indicators" aria-expanded="true" aria-label="Recolher indicadores financeiros">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+            </button>
+          </div>
+          <div class="finance-summary collapsible-content">
+          <article class="finance-card primary-card" id="financeRevenueCard">
+            <div class="finance-card-head">
+              <span class="finance-icon-shell" aria-hidden="true">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </span>
+              <div>
+                <span class="finance-label">Receita recebida</span>
+                <small id="financeRevenueNote"></small>
+              </div>
+            </div>
+            <div class="finance-card-value"><strong id="financeRevenue">R$ 0</strong></div>
+          </article>
+
+          <article class="finance-card pending-card" id="financePendingCard">
+            <div class="finance-card-head">
+              <span class="finance-icon-shell" aria-hidden="true">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M12 7v5l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+              </span>
+              <div>
+                <span class="finance-label">Pagamentos pendentes</span>
+                <small id="financePendingNote"></small>
+              </div>
+            </div>
+            <div class="finance-card-value"><strong id="financePending">R$ 0</strong></div>
+          </article>
+
+          <article class="finance-card expense-card" id="financeExpensesCard">
+            <div class="finance-card-head">
+              <span class="finance-icon-shell" aria-hidden="true">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M3 7h18"/><path d="M7 3v4"/><path d="M17 3v4"/><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M8 12h8"/></svg>
+              </span>
+              <div>
+                <span class="finance-label">Despesas</span>
+                <small id="financeExpensesNote">materiais e custos</small>
+              </div>
+            </div>
+            <div class="finance-card-value"><strong id="financeExpenses">R$ 0</strong></div>
+          </article>
+
+          <article class="finance-card net-card" id="financeNetCard">
+            <div class="finance-card-head">
+              <span class="finance-icon-shell" aria-hidden="true">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M4 16l5-5 4 4 7-7"/><path d="M15 8h5v5"/></svg>
+              </span>
+              <div>
+                <span class="finance-label">Resultado</span>
+                <small id="financeNetNote">recebido − despesas</small>
+              </div>
+            </div>
+            <div class="finance-card-value"><strong id="financeNet">R$ 0</strong></div>
+          </article>
+
+          <article class="finance-card ticket-card" id="financeTicketCard">
+            <div class="finance-card-head">
+              <span class="finance-icon-shell" aria-hidden="true">
+                <svg class="ui-icon" viewBox="0 0 24 24"><path d="M3 10h18"/><path d="M7 4v16"/><path d="M17 4v16"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+              </span>
+              <div>
+                <span class="finance-label">Ticket médio</span>
+                <small id="financeTicketNote">dos valores recebidos</small>
+              </div>
+            </div>
+            <div class="finance-card-value"><strong id="financeTicket">R$ 0</strong></div>
+          </article>
+          </div>
+        </section>
+
+        <section class="payment-alert" id="pendingPaymentAlert" hidden>
+          <div><span class="alert-icon">!</span><div><strong>Existem pagamentos pendentes</strong><p>Concluídos sem recebimento. Você pode dar baixa quando o dinheiro entrar.</p></div></div>
+          <button class="text-button" data-scroll-pending>Ver pendências</button>
+        </section>
+
+        <div class="finance-grid">
+          <section class="panel plain-panel collapsible-section finance-detail-panel" data-collapse-key="transactions">
+            <div class="section-heading"><div><p class="eyebrow">Últimos recebimentos</p><h3>Movimentações</h3></div><button class="collapse-toggle" type="button" data-collapse-toggle="transactions" aria-expanded="true" aria-label="Recolher movimentações"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button></div>
+            <div class="transactions collapsible-content" id="transactionsList"></div>
+          </section>
+          <section class="panel plain-panel collapsible-section finance-detail-panel" id="pendingPaymentsPanel" data-collapse-key="pendingList">
+            <div class="section-heading"><div><p class="eyebrow">Atenção</p><h3>Pagamentos pendentes</h3></div><div class="finance-heading-actions"><span class="count-badge" id="pendingPaymentsCount">0</span><button class="collapse-toggle" type="button" data-collapse-toggle="pendingList" aria-expanded="true" aria-label="Recolher pagamentos pendentes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button></div></div>
+            <div id="pendingPaymentsList" class="pending-payments-list collapsible-content"></div>
+          </section>
+          <section class="panel plain-panel collapsible-section finance-detail-panel" data-collapse-key="servicesRanking">
+            <div class="section-heading"><div><p class="eyebrow">Serviços</p><h3>Mais realizados</h3></div><button class="collapse-toggle" type="button" data-collapse-toggle="servicesRanking" aria-expanded="true" aria-label="Recolher ranking de serviços"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button></div>
+            <div id="serviceRanking" class="ranking-list collapsible-content"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-settings" data-title="Ajustes">
+        <div class="settings-grid">
+          <section class="settings-section">
+            <p class="eyebrow">Rotina</p><h2>Como o painel deve funcionar.</h2>
+            <div class="settings-list">
+              <label class="setting-row"><span><strong>Intervalo padrão</strong><small>Espaço automático entre atendimentos</small></span><span class="number-setting"><input id="defaultGapInput" type="number" min="0" step="1" inputmode="numeric" aria-label="Intervalo padrão em minutos" /><em>min</em></span></label>
+              <label class="setting-row"><span><strong>Lembrete de retorno</strong><small>Quando sugerir chamar a cliente novamente</small></span><select id="returnDaysSelect"></select></label>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <p class="eyebrow">Agenda</p><h3>Visibilidade dos cartões</h3><p class="muted-copy compact-copy">Escolha o que deve aparecer na agenda. Depois vocês podem decidir juntas quais dados fazem sentido manter visíveis.</p>
+            <div id="agendaFieldToggles" class="toggle-list settings-toggle-list"></div>
+          </section>
+
+          <section class="settings-section full-span">
+            <div class="section-heading service-heading"><div><p class="eyebrow">Serviços</p><h3>Valores e serviços</h3></div><button class="secondary-action" id="addServiceBtn">+ Novo serviço</button></div>
+            <div id="servicesSettings" class="service-settings-list"></div>
+          </section>
+
+          <section class="settings-section full-span workspace-settings">
+            <div class="section-heading service-heading">
+              <div><p class="eyebrow">Negócio</p><h3>Identidade do espaço</h3></div>
+              <span class="account-role-badge" id="currentRoleBadge">Conta</span>
+            </div>
+            <p class="muted-copy compact-copy">Esses dados identificam o painel. O nome pode ser alterado depois sem perder agenda, clientes ou financeiro.</p>
+            <form id="workspaceSettingsForm" class="workspace-settings-form">
+              <label>Nome do negócio<input id="settingsWorkspaceName" type="text" maxlength="60" required /></label>
+              <label>Nome da profissional<input id="settingsOwnerDisplayName" type="text" maxlength="60" required /></label>
+              <label>WhatsApp<input id="settingsWorkspaceWhatsapp" type="tel" placeholder="(11) 99999-9999" /></label>
+              <button class="secondary-action" type="submit">Salvar identidade</button>
+            </form>
+          </section>
+
+          <section class="settings-section full-span access-settings">
+            <div>
+              <p class="eyebrow">Acesso</p>
+              <h3>Sessão do painel</h3><p class="current-user-line" id="currentUserLine"></p>
+              <p class="muted-copy">Este MVP usa uma sessão local para teste. Quando o Supabase Auth for conectado, esta mesma tela poderá usar autenticação real.</p>
+            </div>
+            <button class="danger-action logout-button" id="logoutBtn" type="button">
+              <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/></svg>
+              Sair do painel
+            </button>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Navegação mobile">
+      <button class="nav-item is-active" data-view="today"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Hoje</span></button>
+      <button class="nav-item" data-view="agenda"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg></span><span>Agenda</span></button>
+      <button class="nav-item nav-create" data-action="new-appointment" aria-label="Novo atendimento"><span>+</span></button>
+      <button class="nav-item" data-view="clients"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span>Clientes</span></button>
+      <button class="nav-item" data-view="finance"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M3 9h18M16 14h2"/></svg></span><span>Financeiro</span></button>
+    </nav>
+  </div>
+
+  <dialog class="sheet-dialog" id="appointmentDialog">
+    <form id="appointmentForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Agenda</p><h2>Novo atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="appointmentDialog" data-cancel-message="Cadastro de novo atendimento cancelado." aria-label="Fechar">×</button></div>
+      <div class="form-stack">
+        <label>Cliente<select id="appointmentClient" required></select></label>
+        <label>Serviço<select id="appointmentService" required></select></label>
+        <div class="form-row"><label>Data<input id="appointmentDate" type="date" required /></label><label>Horário<input id="appointmentTime" type="time" required /></label></div>
+        <label>Status<select id="appointmentStatus"><option value="confirmed">Confirmado</option><option value="waiting">Aguardando</option></select></label>
+        <label>Observação<textarea id="appointmentNotes" rows="3" placeholder="Opcional"></textarea></label>
+      </div>
+      <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog="appointmentDialog" data-cancel-message="Cadastro de novo atendimento cancelado.">Cancelar</button><button type="submit" class="primary-action" id="saveAppointmentBtn">Salvar atendimento</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet-dialog" id="clientDialog">
+    <form id="clientForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Clientes</p><h2>Nova cliente</h2></div><button type="button" class="icon-button" data-close-dialog="clientDialog" aria-label="Fechar">×</button></div>
+      <div class="form-stack">
+        <label>Nome<input id="clientName" type="text" required placeholder="Nome da cliente" /></label>
+        <label>WhatsApp<input id="clientPhone" type="tel" placeholder="(11) 99999-9999" /></label>
+        <label>Aniversário<input id="clientBirthday" type="date" /></label>
+        <label>Observações<textarea id="clientNotes" rows="4" placeholder="Preferências, cuidados, detalhes importantes..."></textarea></label>
+      </div>
+      <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog="clientDialog">Cancelar</button><button type="submit" class="primary-action" id="saveClientBtn">Salvar cliente</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet-dialog" id="expenseDialog">
+    <form id="expenseForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Financeiro</p><h2>Registrar despesa</h2></div><button type="button" class="icon-button" data-close-dialog="expenseDialog" data-cancel-message="Registro de despesa cancelado." aria-label="Fechar">×</button></div>
+      <div class="form-stack">
+        <label>Descrição<input id="expenseDescription" type="text" required placeholder="Ex.: esmaltes" /></label>
+        <div class="form-row"><label>Valor<input id="expenseAmount" type="number" min="0" step="0.01" required /></label><label>Data<input id="expenseDate" type="date" required /></label></div>
+      </div>
+      <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog="expenseDialog" data-cancel-message="Registro de despesa cancelado.">Cancelar</button><button type="submit" class="primary-action" id="saveExpenseBtn">Salvar despesa</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet-dialog" id="serviceDialog">
+    <form id="serviceForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Serviços</p><h2 id="serviceDialogTitle">Novo serviço</h2></div><button type="button" class="icon-button" data-close-dialog="serviceDialog" aria-label="Fechar">×</button></div>
+      <div class="form-stack">
+        <label>Nome do serviço<input id="serviceName" type="text" required placeholder="Ex.: Manicure" /></label>
+        <label>Descrição<input id="serviceDescription" type="text" placeholder="Ex.: Cuticulagem com francesinha" /></label>
+        <div class="form-row"><label>Valor<input id="servicePrice" type="number" min="0" step="0.01" required /></label><label>Duração em minutos <span class="optional-label">opcional</span><input id="serviceDuration" type="number" min="1" step="5" placeholder="Ex.: 60" /></label></div>
+      </div>
+      <div class="dialog-actions service-dialog-actions"><button type="button" class="danger-action" id="deleteServiceBtn" hidden>Excluir serviço</button><span></span><button type="button" class="secondary-action" data-close-dialog="serviceDialog">Cancelar</button><button type="submit" class="primary-action">Salvar serviço</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet-dialog decision-dialog" id="paymentDialog">
+    <div class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Financeiro</p><h2 id="paymentDialogTitle">Concluir atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="paymentDialog" aria-label="Fechar">×</button></div>
+      <div class="decision-summary"><span id="paymentClientName">Cliente</span><strong id="paymentAmount">R$ 0</strong></div>
+      <h3 class="decision-question">Dinheiro recebido?</h3>
+      <p class="muted-copy">Se ainda não recebeu, deixe como pendente. O aviso continuará aparecendo no Financeiro até a baixa.</p>
+      <label class="standalone-label" id="paymentMethodWrap">Forma de pagamento<select id="paymentMethod"></select></label>
+      <div class="dialog-actions"><button type="button" class="secondary-action" id="markPaymentPendingBtn">Pendente</button><button type="button" class="primary-action" id="markPaymentReceivedBtn">Sim, recebido</button></div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet-dialog decision-dialog" id="cancelDialog">
+    <div class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Agenda</p><h2>Cancelar atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="cancelDialog" aria-label="Fechar">×</button></div>
+      <div class="decision-summary"><span id="cancelClientName">Cliente</span><strong id="cancelAmount">R$ 0</strong></div>
+      <h3 class="decision-question">Dinheiro foi devolvido?</h3>
+      <p class="muted-copy">Se já houver um recebimento registrado, “Sim” retira o valor do financeiro e “Não” mantém o valor recebido.</p>
+      <div class="dialog-actions"><button type="button" class="secondary-action" id="cancelNoRefundBtn">Não, manter</button><button type="button" class="primary-action" id="cancelRefundBtn">Sim, devolvido</button></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/js/config.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "Gestão — Agenda e Financeiro",
+  "short_name": "Gestão",
+  "description": "Agenda, clientes e financeiro em um único painel.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f2f0",
+  "theme_color": "#3b2a23",
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
