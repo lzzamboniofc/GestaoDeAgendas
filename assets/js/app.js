@@ -1,11 +1,12 @@
 (() => {
-  const CONFIG = window.GESTAO_CONFIG || window.NOVAES_NAILS_CONFIG || {};
+  const CONFIG = window.GESTAO_CONFIG || {};
   const APP_CONFIG = CONFIG.app || {};
   const AUTH_CONFIG = CONFIG.auth || {};
-  const THEME_CONFIG = CONFIG.theme || {};
+  const BRANDING_CONFIG = CONFIG.branding || {};
+  const THEMES_CONFIG = CONFIG.themes || {};
+  const FINANCE_THEME_CONFIG = CONFIG.financeTheme || {};
   const DEFAULT_CONFIG = CONFIG.defaults || {};
-  const STORAGE_KEY = 'gestao_negocio_mvp_v10';
-  const LEGACY_STORAGE_KEY = 'novaes_nails_gestao_mvp_v3';
+  const STORAGE_KEY = 'gestao_negocio_mvp_v12';
   const WORKSPACE_KEY = 'gestao_workspace_v1';
   const OWNER_ACCOUNT_KEY = 'gestao_owner_account_v1';
   const AUTH_SESSION_KEY = 'gestao_auth_session_v2';
@@ -32,10 +33,37 @@
   let ownerAccount = loadOwnerAccount();
   let currentUser = readAuthSession();
 
+  const WEEKDAY_LABELS = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+
+  function defaultAvailability() {
+    const source = DEFAULT_CONFIG.availability || {};
+    const fallbackDays = {
+      0: { enabled: false, start: '08:00', end: '18:30', breakEnabled: false, breakStart: '12:00', breakEnd: '13:00' },
+      1: { enabled: true, start: '08:00', end: '18:30', breakEnabled: true, breakStart: '12:00', breakEnd: '13:00' },
+      2: { enabled: true, start: '08:00', end: '18:30', breakEnabled: true, breakStart: '12:00', breakEnd: '13:00' },
+      3: { enabled: true, start: '08:00', end: '18:30', breakEnabled: true, breakStart: '12:00', breakEnd: '13:00' },
+      4: { enabled: true, start: '08:00', end: '18:30', breakEnabled: true, breakStart: '12:00', breakEnd: '13:00' },
+      5: { enabled: true, start: '08:00', end: '18:30', breakEnabled: true, breakStart: '12:00', breakEnd: '13:00' },
+      6: { enabled: true, start: '08:00', end: '12:00', breakEnabled: false, breakStart: '12:00', breakEnd: '13:00' },
+    };
+    const days = {};
+    for (let day = 0; day <= 6; day += 1) days[day] = { ...fallbackDays[day], ...(source.days?.[day] || source.days?.[String(day)] || {}) };
+    return {
+      enabled: Boolean(source.enabled),
+      slotMinutes: Math.max(15, Number(source.slotMinutes) || 60),
+      blockedDates: Array.isArray(source.blockedDates) ? [...new Set(source.blockedDates.filter(Boolean))] : [],
+      days,
+    };
+  }
+
   const defaultState = () => ({
     settings: {
       defaultGap: Number(DEFAULT_CONFIG.defaultGapMinutes ?? 15),
       returnDays: Number(DEFAULT_CONFIG.returnDays ?? 21),
+      themeId: THEMES_CONFIG[DEFAULT_CONFIG.themeId] ? DEFAULT_CONFIG.themeId : (Object.keys(THEMES_CONFIG)[0] || 'brand'),
+      agendaOverviewMode: ['week', 'month'].includes(DEFAULT_CONFIG.agendaOverviewMode) ? DEFAULT_CONFIG.agendaOverviewMode : 'week',
+      agendaDayPosition: ['above', 'below'].includes(DEFAULT_CONFIG.agendaDayPosition) ? DEFAULT_CONFIG.agendaDayPosition : 'above',
+      availability: defaultAvailability(),
       agendaFields: {
         service: DEFAULT_CONFIG.agendaFields?.service ?? true,
         price: DEFAULT_CONFIG.agendaFields?.price ?? true,
@@ -45,39 +73,15 @@
       },
       financeCollapsed: {},
     },
-    services: (CONFIG.services || [
-      { id: 'srv_pedi_francesinha', name: 'Pedicure', description: 'Cuticulagem com francesinha', duration: null, price: 45, active: true },
-      { id: 'srv_pedi_comum', name: 'Pedicure', description: 'Pedicure com esmaltação comum', duration: null, price: 40, active: true },
-      { id: 'srv_mani_comum', name: 'Manicure', description: 'Cuticulagem com esmaltação comum', duration: null, price: 35, active: true },
-      { id: 'srv_mani_francesinha', name: 'Manicure', description: 'Cuticulagem com francesinha', duration: null, price: 40, active: true },
-    ]).map((service) => ({ ...service })),
-    clients: [
-      { id: 'cli_ana', name: 'Ana Martins', phone: '5511999991001', birthday: '1993-05-14', notes: 'Prefere esmaltes claros e costuma agendar no período da manhã.' },
-      { id: 'cli_carla', name: 'Carla Souza', phone: '5511999991002', birthday: '1989-10-02', notes: 'Costuma confirmar o horário no dia anterior.' },
-      { id: 'cli_mariana', name: 'Mariana Lopes', phone: '5511999991003', birthday: '1997-02-21', notes: 'Gosta de francesinha e normalmente já deixa o próximo retorno marcado.' },
-      { id: 'cli_juliana', name: 'Juliana Mendes', phone: '5511999991004', birthday: '1991-12-08', notes: 'Prefere atendimento depois das 14h.' },
-      { id: 'cli_beatriz', name: 'Beatriz Lima', phone: '5511999991005', birthday: '1995-08-30', notes: 'Cliente antiga. Costuma retornar a cada três semanas.' },
-    ],
-    appointments: [
-      { id: 'apt_1', clientId: 'cli_ana', serviceId: 'srv_mani_francesinha', date: today, time: '09:00', status: 'done', notes: '', priceSnapshot: 40, paymentStatus: 'received', paymentMethod: 'Pix' },
-      { id: 'apt_2', clientId: 'cli_carla', serviceId: 'srv_pedi_francesinha', date: today, time: '10:30', status: 'confirmed', notes: 'Confirmar se mantém francesinha.', priceSnapshot: 45, paymentStatus: null, paymentMethod: null },
-      { id: 'apt_3', clientId: 'cli_mariana', serviceId: 'srv_mani_comum', date: today, time: '14:00', status: 'confirmed', notes: '', priceSnapshot: 35, paymentStatus: null, paymentMethod: null },
-      { id: 'apt_4', clientId: 'cli_juliana', serviceId: 'srv_pedi_comum', date: today, time: '16:30', status: 'waiting', notes: '', priceSnapshot: 40, paymentStatus: null, paymentMethod: null },
-      { id: 'apt_5', clientId: 'cli_beatriz', serviceId: 'srv_mani_francesinha', date: shiftDate(today, 1), time: '09:30', status: 'confirmed', notes: '', priceSnapshot: 40, paymentStatus: null, paymentMethod: null },
-      { id: 'apt_h1', clientId: 'cli_beatriz', serviceId: 'srv_pedi_comum', date: shiftDate(today, -23), time: '14:00', status: 'done', notes: '', priceSnapshot: 40, paymentStatus: 'received', paymentMethod: 'Dinheiro' },
-      { id: 'apt_h2', clientId: 'cli_ana', serviceId: 'srv_mani_comum', date: shiftDate(today, -18), time: '09:00', status: 'done', notes: '', priceSnapshot: 35, paymentStatus: 'received', paymentMethod: 'Pix' },
-      { id: 'apt_h3', clientId: 'cli_mariana', serviceId: 'srv_mani_francesinha', date: shiftDate(today, -13), time: '15:00', status: 'done', notes: '', priceSnapshot: 40, paymentStatus: 'received', paymentMethod: 'Pix' },
-      { id: 'apt_h4', clientId: 'cli_carla', serviceId: 'srv_pedi_francesinha', date: shiftDate(today, -28), time: '10:00', status: 'done', notes: '', priceSnapshot: 45, paymentStatus: 'received', paymentMethod: 'Cartão' },
-      { id: 'apt_h5', clientId: 'cli_juliana', serviceId: 'srv_mani_comum', date: shiftDate(today, -25), time: '16:00', status: 'done', notes: '', priceSnapshot: 35, paymentStatus: 'received', paymentMethod: 'Pix' },
-    ],
-    expenses: [
-      { id: 'exp_1', description: 'Reposição de esmaltes', amount: 180, date: shiftDate(today, -4) },
-      { id: 'exp_2', description: 'Algodão e descartáveis', amount: 72.5, date: shiftDate(today, -9) },
-    ],
+    services: (CONFIG.services || []).map((service) => ({ ...service })),
+    clients: [],
+    appointments: [],
+    expenses: [],
   });
 
   let state = loadState();
   let agendaDate = today;
+  let agendaOverviewMode = state.settings.agendaOverviewMode === 'month' ? 'month' : 'week';
   let selectedClientId = state.clients[0]?.id || null;
   let toastTimer = null;
   let serviceEditingId = null;
@@ -85,9 +89,10 @@
   let paymentAppointmentId = null;
   let paymentMode = 'complete';
   let cancellingAppointmentId = null;
+  let dynamicBrandTheme = null;
 
   function genericAppName() {
-    return APP_CONFIG.genericName || 'Gestão';
+    return APP_CONFIG.genericName || 'Painel';
   }
 
   function workspaceName() {
@@ -97,7 +102,7 @@
   function workspaceInitials() {
     const name = workspaceName();
     const words = name.split(/\s+/).filter(Boolean);
-    if (!words.length) return 'G';
+    if (!words.length) return 'P';
     if (words.length === 1) return words[0].slice(0, 1).toUpperCase();
     return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
   }
@@ -105,7 +110,7 @@
   function applyBranding() {
     const name = workspaceName();
     const initials = workspaceInitials();
-    document.title = workspace?.name ? `${name} — Gestão` : (APP_CONFIG.title || 'Gestão — Agenda e Financeiro');
+    document.title = workspace?.name ? `${name} — Painel` : (APP_CONFIG.title || 'Painel — Agenda e Financeiro');
 
     const brandName = document.getElementById('brandNameLabel');
     if (brandName) brandName.textContent = name;
@@ -124,35 +129,155 @@
     if (settingsWhatsapp) settingsWhatsapp.value = workspace?.whatsapp || '';
   }
 
-  function applyConfig() {
+
+  function mixRgb(rgb, target, amount) {
+    return rgb.map((value, index) => Math.round(value + (target[index] - value) * amount));
+  }
+
+  function rgbCss(rgb) {
+    return `rgb(${rgb[0]} ${rgb[1]} ${rgb[2]})`;
+  }
+
+  function applyLoginPalette(accent) {
+    const root = document.documentElement;
+    const base = Array.isArray(accent) ? accent : [83, 98, 115];
+    root.style.setProperty('--login-accent', rgbCss(base));
+    root.style.setProperty('--login-accent-dark', rgbCss(mixRgb(base, [12, 15, 20], .52)));
+    root.style.setProperty('--login-accent-soft', rgbCss(mixRgb(base, [255, 255, 255], .84)));
+  }
+
+  function extractLogoAccent(img) {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 48;
+      canvas.height = 48;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return null;
+      ctx.drawImage(img, 0, 0, 48, 48);
+      const data = ctx.getImageData(0, 0, 48, 48).data;
+      const chosen = [];
+      const fallback = [];
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 180) continue;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const light = (max + min) / 510;
+        const saturation = max === min ? 0 : (max - min) / (255 - Math.abs(max + min - 255));
+        if (light > .1 && light < .9) fallback.push([r, g, b]);
+        if (saturation > .24 && light > .16 && light < .82) chosen.push([r, g, b]);
+      }
+      const pixels = chosen.length >= 12 ? chosen : fallback;
+      if (!pixels.length) return null;
+      return [0, 1, 2].map((channel) => Math.round(pixels.reduce((sum, px) => sum + px[channel], 0) / pixels.length));
+    } catch {
+      return null;
+    }
+  }
+
+  function applyLoginBranding() {
+    const root = document.documentElement;
+    root.style.setProperty('--login-accent', BRANDING_CONFIG.loginFallbackAccent || '#536273');
+    root.style.setProperty('--login-accent-dark', BRANDING_CONFIG.loginFallbackDark || '#171b20');
+    root.style.setProperty('--login-accent-soft', BRANDING_CONFIG.loginFallbackSoft || '#e9edf1');
+    const logoUrl = BRANDING_CONFIG.logoUrl;
+    if (!logoUrl) return;
+    ['loginBrandLogo', 'loginMobileLogo', 'onboardingBrandLogo'].forEach((id) => {
+      const img = document.getElementById(id);
+      if (!img) return;
+      img.addEventListener('load', () => img.parentElement?.classList.add('has-logo'), { once: true });
+      img.addEventListener('error', () => { img.style.display = 'none'; }, { once: true });
+      img.src = logoUrl;
+    });
+    if (BRANDING_CONFIG.deriveLoginPalette === false) return;
+    const probe = new Image();
+    probe.crossOrigin = 'anonymous';
+    probe.onload = () => {
+      const accent = extractLogoAccent(probe);
+      if (accent) {
+        applyLoginPalette(accent);
+        dynamicBrandTheme = brandThemeFromRgb(accent);
+        if ((state?.settings?.themeId || DEFAULT_CONFIG.themeId) === 'brand') applyPanelTheme('brand');
+      }
+    };
+    probe.src = logoUrl;
+  }
+
+  function brandThemeFromRgb(rgb) {
+    const base = Array.isArray(rgb) ? rgb : [83, 98, 115];
+    const dark = mixRgb(base, [20, 22, 25], .58);
+    const soft = mixRgb(base, [255, 255, 255], .76);
+    const nav = mixRgb(base, [255, 255, 255], .62);
+    const field = mixRgb(base, [110, 110, 110], .35);
+    return {
+      ...(THEMES_CONFIG.brand || {}),
+      accent: rgbCss(base),
+      accentDark: rgbCss(dark),
+      accentSoft: rgbCss(soft),
+      navActive: rgbCss(nav),
+      fieldBorder: rgbCss(field),
+      line: `rgba(${dark[0]}, ${dark[1]}, ${dark[2]}, .25)`,
+    };
+  }
+
+  function getTheme(themeId = state?.settings?.themeId) {
+    if (themeId === 'brand' && dynamicBrandTheme) return dynamicBrandTheme;
+    return THEMES_CONFIG[themeId] || THEMES_CONFIG[DEFAULT_CONFIG.themeId] || THEMES_CONFIG.brand || {};
+  }
+
+  function applyPanelTheme(themeId = state?.settings?.themeId, { persist = false } = {}) {
+    const resolvedId = THEMES_CONFIG[themeId] ? themeId : (DEFAULT_CONFIG.themeId || Object.keys(THEMES_CONFIG)[0] || 'brand');
+    const theme = getTheme(resolvedId);
     const root = document.documentElement;
     const cssVars = {
-      '--bg': THEME_CONFIG.background,
-      '--surface': THEME_CONFIG.surface,
-      '--surface-2': THEME_CONFIG.surfaceAlt,
-      '--ink': THEME_CONFIG.text,
-      '--muted': THEME_CONFIG.muted,
-      '--line': THEME_CONFIG.line,
-      '--accent': THEME_CONFIG.accent,
-      '--accent-dark': THEME_CONFIG.accentDark,
-      '--accent-soft': THEME_CONFIG.accentSoft,
-      '--nav-active': THEME_CONFIG.navActive,
-      '--field-border': THEME_CONFIG.fieldBorder,
+      '--bg': theme.background,
+      '--surface': theme.surface,
+      '--surface-2': theme.surfaceAlt,
+      '--ink': theme.text,
+      '--muted': theme.muted,
+      '--line': theme.line,
+      '--accent': theme.accent,
+      '--accent-dark': theme.accentDark,
+      '--accent-soft': theme.accentSoft,
+      '--nav-active': theme.navActive,
+      '--field-border': theme.fieldBorder,
     };
     Object.entries(cssVars).forEach(([key, value]) => { if (value) root.style.setProperty(key, value); });
+    if (state?.settings) state.settings.themeId = resolvedId;
+    if (persist) saveState();
 
     const financeView = document.getElementById('view-finance');
     if (financeView) {
-      if (THEME_CONFIG.financeIncome) financeView.style.setProperty('--finance-green', THEME_CONFIG.financeIncome);
-      if (THEME_CONFIG.financePending) financeView.style.setProperty('--finance-yellow', THEME_CONFIG.financePending);
-      if (THEME_CONFIG.financeExpense) financeView.style.setProperty('--finance-red', THEME_CONFIG.financeExpense);
-      if (THEME_CONFIG.financeTicket) financeView.style.setProperty('--finance-blue', THEME_CONFIG.financeTicket);
-      if (THEME_CONFIG.financeBorder) financeView.style.setProperty('--finance-border', THEME_CONFIG.financeBorder);
+      if (FINANCE_THEME_CONFIG.financeIncome) financeView.style.setProperty('--finance-green', FINANCE_THEME_CONFIG.financeIncome);
+      if (FINANCE_THEME_CONFIG.financePending) financeView.style.setProperty('--finance-yellow', FINANCE_THEME_CONFIG.financePending);
+      if (FINANCE_THEME_CONFIG.financeExpense) financeView.style.setProperty('--finance-red', FINANCE_THEME_CONFIG.financeExpense);
+      if (FINANCE_THEME_CONFIG.financeTicket) financeView.style.setProperty('--finance-blue', FINANCE_THEME_CONFIG.financeTicket);
+      if (FINANCE_THEME_CONFIG.financeBorder) financeView.style.setProperty('--finance-border', FINANCE_THEME_CONFIG.financeBorder);
     }
-
-    applyBranding();
     const themeMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeMeta && THEME_CONFIG.accentDark) themeMeta.setAttribute('content', THEME_CONFIG.accentDark);
+    if (themeMeta && theme.accentDark) themeMeta.setAttribute('content', theme.accentDark);
+    renderThemeOptions();
+  }
+
+  function renderThemeOptions() {
+    const target = document.getElementById('themeOptions');
+    if (!target) return;
+    const selected = state?.settings?.themeId || DEFAULT_CONFIG.themeId || 'brand';
+    target.innerHTML = Object.entries(THEMES_CONFIG).map(([id, baseTheme]) => {
+      const theme = id === 'brand' && dynamicBrandTheme ? dynamicBrandTheme : baseTheme;
+      return `<button type="button" class="theme-option${selected === id ? ' is-selected' : ''}" data-theme-id="${escapeHtml(id)}" aria-pressed="${selected === id ? 'true' : 'false'}">
+        <span class="theme-preview" style="--theme-dark:${escapeHtml(theme.accentDark || '#222')};--theme-accent:${escapeHtml(theme.accent || '#666')};--theme-soft:${escapeHtml(theme.accentSoft || '#ddd')}">
+          <i></i><i></i><i></i>
+        </span>
+        <span class="theme-copy"><strong>${escapeHtml(baseTheme.label || id)}</strong><small>${escapeHtml(baseTheme.description || '')}</small></span>
+        <span class="theme-check" aria-hidden="true">✓</span>
+      </button>`;
+    }).join('');
+  }
+
+  function applyConfig() {
+    applyLoginBranding();
+    applyPanelTheme(state?.settings?.themeId || DEFAULT_CONFIG.themeId || 'brand');
+    applyBranding();
 
     const returnSelect = document.getElementById('returnDaysSelect');
     if (returnSelect) {
@@ -223,7 +348,7 @@
     const line = document.getElementById('currentUserLine');
     const badge = document.getElementById('currentRoleBadge');
     if (line) line.textContent = currentUser ? `Conectado como ${currentUser.displayName || currentUser.username}.` : '';
-    if (badge) badge.textContent = currentUser?.role === 'owner' ? 'Proprietária' : currentUser?.role === 'admin' ? 'Administrador' : 'Conta';
+    if (badge) badge.textContent = currentUser?.role === 'owner' ? 'Responsável' : currentUser?.role === 'admin' ? 'Administrador' : 'Conta';
   }
 
   function openAuthenticatedApp() {
@@ -330,7 +455,7 @@
     if (user === String(admin.username || '') && password === String(admin.password || '')) {
       authenticated = { username: user, displayName: admin.displayName || 'Administrador', role: 'admin' };
     } else if (owner && user === String(owner.username || '') && password === String(owner.password || '')) {
-      authenticated = { username: user, displayName: owner.displayName || workspace?.ownerName || 'Proprietária', role: 'owner' };
+      authenticated = { username: user, displayName: owner.displayName || workspace?.ownerName || 'Responsável', role: 'owner' };
     }
 
     if (!authenticated) {
@@ -370,7 +495,7 @@
 
   function loadState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+      const raw = localStorage.getItem(STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : null;
       if (!parsed) return defaultState();
       const base = defaultState();
@@ -380,6 +505,18 @@
         settings: {
           ...base.settings,
           ...(parsed.settings || {}),
+          themeId: THEMES_CONFIG[parsed.settings?.themeId] ? parsed.settings.themeId : base.settings.themeId,
+          agendaOverviewMode: ['week', 'month'].includes(parsed.settings?.agendaOverviewMode) ? parsed.settings.agendaOverviewMode : base.settings.agendaOverviewMode,
+          agendaDayPosition: ['above', 'below'].includes(parsed.settings?.agendaDayPosition) ? parsed.settings.agendaDayPosition : base.settings.agendaDayPosition,
+          availability: {
+            ...base.settings.availability,
+            ...(parsed.settings?.availability || {}),
+            blockedDates: Array.isArray(parsed.settings?.availability?.blockedDates) ? [...new Set(parsed.settings.availability.blockedDates.filter(Boolean))] : base.settings.availability.blockedDates,
+            days: Object.fromEntries(Array.from({ length: 7 }, (_, day) => [day, {
+              ...base.settings.availability.days[day],
+              ...(parsed.settings?.availability?.days?.[day] || parsed.settings?.availability?.days?.[String(day)] || {}),
+            }])),
+          },
           agendaFields: { ...base.settings.agendaFields, ...(parsed.settings?.agendaFields || {}) },
           financeCollapsed: { ...base.settings.financeCollapsed, ...(parsed.settings?.financeCollapsed || {}) },
         },
@@ -399,6 +536,92 @@
   function getAppointments(date) { return state.appointments.filter((a) => a.date === date).sort((a, b) => a.time.localeCompare(b.time)); }
   function servicePrice(appointment) { return Number(appointment.priceSnapshot ?? getService(appointment.serviceId)?.price ?? 0); }
   function appointmentRevenue(appointments) { return appointments.reduce((sum, item) => sum + servicePrice(item), 0); }
+
+  function timeToMinutes(value = '') {
+    const match = String(value).match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return null;
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+    return hours * 60 + minutes;
+  }
+
+  function minutesToTime(total) {
+    const normalized = Math.max(0, Math.min(1439, Number(total) || 0));
+    return `${pad(Math.floor(normalized / 60))}:${pad(normalized % 60)}`;
+  }
+
+  function intervalsOverlap(startA, endA, startB, endB) {
+    return startA < endB && startB < endA;
+  }
+
+  function availabilitySettings() {
+    if (!state.settings.availability) state.settings.availability = defaultAvailability();
+    return state.settings.availability;
+  }
+
+  function dayAvailability(dateKey) {
+    const weekday = dateFromKey(dateKey).getDay();
+    return availabilitySettings().days?.[weekday] || defaultAvailability().days[weekday];
+  }
+
+  function isBlockedDate(dateKey) {
+    return Boolean(dateKey && availabilitySettings().blockedDates?.includes(dateKey));
+  }
+
+  function isWorkingDate(dateKey) {
+    return Boolean(dateKey && dayAvailability(dateKey)?.enabled && !isBlockedDate(dateKey));
+  }
+
+  function serviceBlockMinutes(serviceId) {
+    const availability = availabilitySettings();
+    const service = getService(serviceId);
+    const duration = Number(service?.duration) || 0;
+    return Math.max(Number(availability.slotMinutes) || 60, duration || 0, 15);
+  }
+
+  function appointmentBlockMinutes(appointment) {
+    return serviceBlockMinutes(appointment.serviceId);
+  }
+
+  function theoreticalSlotsForDay(dayConfig, blockMinutes = null) {
+    const availability = availabilitySettings();
+    if (!dayConfig?.enabled) return [];
+    const start = timeToMinutes(dayConfig.start);
+    const end = timeToMinutes(dayConfig.end);
+    const step = Math.max(15, Number(availability.slotMinutes) || 60);
+    const block = Math.max(15, Number(blockMinutes) || step);
+    if (start === null || end === null || end <= start) return [];
+    const breakStart = dayConfig.breakEnabled ? timeToMinutes(dayConfig.breakStart) : null;
+    const breakEnd = dayConfig.breakEnabled ? timeToMinutes(dayConfig.breakEnd) : null;
+    const hasBreak = breakStart !== null && breakEnd !== null && breakEnd > breakStart;
+    const slots = [];
+    for (let cursor = start; cursor + block <= end; cursor += step) {
+      const slotEnd = cursor + block;
+      if (hasBreak && intervalsOverlap(cursor, slotEnd, breakStart, breakEnd)) continue;
+      slots.push(minutesToTime(cursor));
+    }
+    return slots;
+  }
+
+  function availableSlotsFor(dateKey, serviceId) {
+    const availability = availabilitySettings();
+    if (!availability.enabled || !isWorkingDate(dateKey)) return [];
+    const dayConfig = dayAvailability(dateKey);
+    const block = serviceBlockMinutes(serviceId);
+    const theoretical = theoreticalSlotsForDay(dayConfig, block);
+    const existing = getAppointments(dateKey).filter((appointment) => appointment.status !== 'cancelled');
+    return theoretical.filter((time) => {
+      const start = timeToMinutes(time);
+      const end = start + block;
+      return !existing.some((appointment) => {
+        const existingStart = timeToMinutes(appointment.time);
+        if (existingStart === null) return false;
+        const existingEnd = existingStart + appointmentBlockMinutes(appointment);
+        return intervalsOverlap(start, end, existingStart, existingEnd);
+      });
+    });
+  }
 
   function statusLabel(status) {
     return { confirmed: 'Confirmado', waiting: 'Aguardando', done: 'Concluído', cancelled: 'Cancelado' }[status] || status;
@@ -454,8 +677,40 @@
     renderTomorrow();
   }
 
+  function appointmentWindow(appointment) {
+    const service = getService(appointment.serviceId);
+    const durationMinutes = Math.max(15, Number(service?.duration || 30));
+    const [hour, minute] = String(appointment.time || '00:00').split(':').map(Number);
+    const start = dateFromKey(appointment.date);
+    start.setHours(hour || 0, minute || 0, 0, 0);
+    const end = new Date(start.getTime() + durationMinutes * 60000);
+    return { start, end, durationMinutes };
+  }
+
+  function appointmentVisualState(appointment, now = new Date()) {
+    if (appointment.status === 'cancelled') return { key: 'cancelled', label: 'Cancelado' };
+    if (appointment.paymentStatus === 'pending') return { key: 'payment-pending', label: 'Pagamento pendente' };
+    if (appointment.paymentStatus === 'refunded') return { key: 'refunded', label: 'Valor devolvido' };
+
+    const { start, end } = appointmentWindow(appointment);
+    const isDone = appointment.status === 'done';
+    const isPaid = appointment.paymentStatus === 'received';
+
+    if (isDone && isPaid) return { key: 'paid', label: 'Concluído · pago' };
+    if (isDone && !isPaid) return { key: 'payment-pending', label: 'Concluído · aguardando baixa' };
+    if (now < start) return { key: 'upcoming', label: 'Ainda vai ocorrer' };
+    if (now >= start && now < end) return { key: 'in-progress', label: 'Em andamento' };
+    if (isPaid) return { key: 'paid', label: 'Realizado · pago' };
+    return { key: 'past-unsettled', label: 'Horário passado · aguardando baixa' };
+  }
+
+  function appointmentStatusChipMarkup(appointment) {
+    const visual = appointmentVisualState(appointment);
+    return `<span class="appointment-state-chip state-${visual.key}">${escapeHtml(visual.label)}</span>`;
+  }
+
   function appointmentCardMarkup(appointment, condensed = false) {
-    const client = getClient(appointment.clientId) || { name: 'Cliente removida', phone: '' };
+    const client = getClient(appointment.clientId) || { name: 'Cliente removido', phone: '' };
     const service = getService(appointment.serviceId) || { name: 'Serviço', description: '', price: servicePrice(appointment), duration: null };
     const f = state.settings.agendaFields;
     const meta = [];
@@ -465,8 +720,7 @@
     }
     if (f.price) meta.push(`<span>${money(servicePrice(appointment))}</span>`);
     if (f.phone && client.phone) meta.push(`<span>${formatPhone(client.phone)}</span>`);
-    if (f.status) meta.push(`<span>${statusLabel(appointment.status)}</span>`);
-    if (appointment.paymentStatus === 'pending') meta.push('<span class="payment-pending-tag">Pagamento pendente</span>');
+    if (f.status) meta.push(appointmentStatusChipMarkup(appointment));
     if (appointment.paymentStatus === 'refunded') meta.push('<span class="payment-refunded-tag">Valor devolvido</span>');
     if (appointment.status === 'cancelled' && appointment.paymentStatus === 'received') meta.push('<span class="payment-retained-tag">Valor mantido</span>');
     if (f.notes && appointment.notes) meta.push(`<span>${escapeHtml(appointment.notes)}</span>`);
@@ -479,8 +733,9 @@
         ${appointment.status !== 'cancelled' ? `<button class="mini-action action-danger" data-cancel="${appointment.id}">Cancelar</button>` : ''}
       </div>`;
 
+    const visualState = appointmentVisualState(appointment);
     return `
-      <div class="appointment-card status-${appointment.status}">
+      <div class="appointment-card status-${appointment.status} visual-${visualState.key}">
         <h4>${escapeHtml(client.name)}</h4>
         <div class="appointment-meta">${meta.join('')}</div>
         ${actions}
@@ -499,9 +754,125 @@
       </div>`).join('');
   }
 
+  function startOfWeekKey(key) {
+    const date = dateFromKey(key);
+    const day = date.getDay();
+    const mondayOffset = (day + 6) % 7;
+    date.setDate(date.getDate() - mondayOffset);
+    return localDateKey(date);
+  }
+
+  function shiftMonthKey(key, amount) {
+    const date = dateFromKey(key);
+    const day = date.getDate();
+    date.setDate(1);
+    date.setMonth(date.getMonth() + amount);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    date.setDate(Math.min(day, lastDay));
+    return localDateKey(date);
+  }
+
+  function compactWeekday(key) {
+    return dateFromKey(key).toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+  }
+
+  function overviewWeekMarkup() {
+    const start = startOfWeekKey(agendaDate);
+    return Array.from({ length: 7 }, (_, index) => shiftDate(start, index)).map((key) => {
+      const items = getAppointments(key).filter((a) => a.status !== 'cancelled');
+      const selected = key === agendaDate ? ' is-selected' : '';
+      const todayClass = key === today ? ' is-today' : '';
+      const preview = items.slice(0, 4).map((appointment) => {
+        const client = getClient(appointment.clientId);
+        const service = getService(appointment.serviceId);
+        const visual = appointmentVisualState(appointment);
+        return `<span class="week-appointment visual-${visual.key}" title="${escapeHtml(visual.label)}"><b>${appointment.time}</b><em>${escapeHtml(client?.name || 'Cliente')}</em><small>${escapeHtml(service?.name || 'Serviço')}</small><i class="week-state-dot" aria-label="${escapeHtml(visual.label)}"></i></span>`;
+      }).join('');
+      return `<button type="button" class="week-day-card${selected}${todayClass}" data-agenda-date="${key}">
+        <span class="week-day-top"><span><b>${compactWeekday(key)}</b><strong>${dateFromKey(key).getDate()}</strong></span><i>${items.length}</i></span>
+        <span class="week-day-list">${preview || '<span class="week-empty">Sem horários</span>'}${items.length > 4 ? `<small class="week-more">+${items.length - 4} horário${items.length - 4 === 1 ? '' : 's'}</small>` : ''}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function overviewMonthMarkup() {
+    const date = dateFromKey(agendaDate);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const first = new Date(year, month, 1);
+    const startPad = (first.getDay() + 6) % 7;
+    const days = new Date(year, month + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < startPad; i++) cells.push('<span class="month-day-spacer" aria-hidden="true"></span>');
+    for (let day = 1; day <= days; day++) {
+      const key = `${year}-${pad(month + 1)}-${pad(day)}`;
+      const items = getAppointments(key).filter((a) => a.status !== 'cancelled');
+      const classes = `${key === agendaDate ? ' is-selected' : ''}${key === today ? ' is-today' : ''}`;
+      const stateDots = items.slice(0, 4).map((appointment) => `<i class="month-state-dot visual-${appointmentVisualState(appointment).key}"></i>`).join('');
+      cells.push(`<button type="button" class="month-day${classes}" data-agenda-date="${key}" data-month-day="true">
+        <span class="month-day-number">${day}</span>
+        ${items.length ? `<span class="month-day-count">${items.length}</span><span class="month-state-dots">${stateDots}</span>` : '<span class="month-day-count is-empty">0</span>'}
+      </button>`);
+    }
+    return `<div class="month-weekdays">${['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map((d) => `<span>${d}</span>`).join('')}</div><div class="month-grid">${cells.join('')}</div>`;
+  }
+
+  function applyAgendaSectionOrder() {
+    const dayPanel = document.getElementById('agendaDayPanel');
+    const overviewPanel = document.getElementById('agendaOverviewPanel');
+    if (!dayPanel || !overviewPanel) return;
+    const dayFirst = state.settings.agendaDayPosition !== 'below';
+    dayPanel.style.order = dayFirst ? '1' : '2';
+    overviewPanel.style.order = dayFirst ? '2' : '1';
+  }
+
+  function renderAgendaOverview() {
+    const mode = agendaOverviewMode === 'month' ? 'month' : 'week';
+    document.querySelectorAll('[data-agenda-mode]').forEach((button) => button.classList.toggle('is-active', button.dataset.agendaMode === mode));
+    const weekView = document.getElementById('agendaWeekView');
+    const monthView = document.getElementById('agendaMonthView');
+    if (weekView) {
+      weekView.hidden = mode !== 'week';
+      weekView.innerHTML = overviewWeekMarkup();
+    }
+    if (monthView) {
+      monthView.hidden = mode !== 'month';
+      monthView.innerHTML = overviewMonthMarkup();
+    }
+    const label = document.getElementById('agendaOverviewLabel');
+    if (label) {
+      if (mode === 'week') {
+        const start = startOfWeekKey(agendaDate);
+        const end = shiftDate(start, 6);
+        const startDate = dateFromKey(start);
+        const endDate = dateFromKey(end);
+        const sameMonth = startDate.getMonth() === endDate.getMonth();
+        label.textContent = sameMonth
+          ? `${startDate.getDate()}–${endDate.getDate()} de ${endDate.toLocaleDateString('pt-BR', { month: 'long' })}`
+          : `${shortDate(start)} – ${shortDate(end)}`;
+      } else {
+        label.textContent = dateFromKey(agendaDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      }
+    }
+    applyAgendaSectionOrder();
+  }
+
+  function setAgendaOverviewMode(mode, { persistDefault = false } = {}) {
+    if (!['week', 'month'].includes(mode)) return;
+    agendaOverviewMode = mode;
+    if (persistDefault) {
+      state.settings.agendaOverviewMode = mode;
+      saveState();
+    }
+    renderAgendaOverview();
+  }
+
   function renderAgenda() {
     document.getElementById('agendaDateLabel').textContent = longDate(agendaDate);
+    const dayHeading = document.getElementById('agendaDayHeading');
+    if (dayHeading) dayHeading.textContent = dateFromKey(agendaDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
     document.getElementById('agendaTimeline').innerHTML = timelineMarkup(getAppointments(agendaDate), false);
+    renderAgendaOverview();
   }
 
   function renderAgendaToggles() {
@@ -537,7 +908,7 @@
       <div class="compact-client">
         <div><strong>${escapeHtml(client.name)}</strong><small>Último atendimento há ${days} dias</small></div>
         <button class="whatsapp-link" data-whatsapp="${client.id}">Chamar</button>
-      </div>`).join('') : `<p class="muted-copy">Nenhuma cliente passou do período de retorno configurado.</p>`;
+      </div>`).join('') : `<p class="muted-copy">Nenhum cliente passou do período de retorno configurado.</p>`;
   }
 
   function renderTomorrow() {
@@ -562,7 +933,7 @@
         <span><strong>${escapeHtml(client.name)}</strong><small>${last ? `Última visita: ${shortDate(last.date)}` : 'Sem histórico'}</small></span>
         <span class="chevron">›</span>
       </button>`;
-    }).join('') || '<div class="empty-state"><p>Nenhuma cliente encontrada.</p></div>';
+    }).join('') || '<div class="empty-state"><p>Nenhum cliente encontrado.</p></div>';
 
     if (!selectedClientId || !state.clients.some((c) => c.id === selectedClientId)) selectedClientId = clients[0]?.id || null;
     renderClientDetail(selectedClientId);
@@ -572,7 +943,7 @@
     const target = document.getElementById('clientDetail');
     const client = getClient(clientId);
     if (!client) {
-      target.innerHTML = '<p class="muted-copy">Selecione uma cliente para ver os detalhes.</p>';
+      target.innerHTML = '<p class="muted-copy">Selecione um cliente para ver os detalhes.</p>';
       return;
     }
     const history = state.appointments.filter((a) => a.clientId === client.id && a.status === 'done').sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
@@ -755,9 +1126,100 @@
     applyFinanceCollapseState();
   }
 
+  function renderAvailabilitySettings() {
+    const availability = availabilitySettings();
+    const enabledInput = document.getElementById('availabilityEnabled');
+    const config = document.getElementById('availabilityConfig');
+    const fixedConfig = document.getElementById('availabilityFixedConfig');
+    const slotInput = document.getElementById('availabilitySlotMinutes');
+    const daysTarget = document.getElementById('availabilityDays');
+    const preview = document.getElementById('availabilityPreview');
+    const blockedTarget = document.getElementById('availabilityBlockedDates');
+    const blockedDateInput = document.getElementById('availabilityBlockedDate');
+    if (!enabledInput || !config || !fixedConfig || !slotInput || !daysTarget || !preview || !blockedTarget) return;
+
+    enabledInput.checked = Boolean(availability.enabled);
+    config.hidden = false;
+    fixedConfig.hidden = !availability.enabled;
+    slotInput.value = String(Math.max(15, Number(availability.slotMinutes) || 60));
+    if (blockedDateInput && !blockedDateInput.value) blockedDateInput.min = today;
+
+    daysTarget.innerHTML = WEEKDAY_LABELS.map((label, day) => {
+      const dayConfig = availability.days?.[day] || defaultAvailability().days[day];
+      const slots = availability.enabled ? theoreticalSlotsForDay(dayConfig, Math.max(15, Number(availability.slotMinutes) || 60)) : [];
+      const subtitle = !dayConfig.enabled
+        ? 'Sem atendimento'
+        : availability.enabled
+          ? `${slots.length} ${slots.length === 1 ? 'horário' : 'horários'} na grade`
+          : 'Atende neste dia · horário livre';
+      return `<article class="availability-day${dayConfig.enabled ? ' is-enabled' : ''}" data-availability-day="${day}">
+        <div class="availability-day-head">
+          <div><strong>${label}</strong><small>${subtitle}</small></div>
+          <label class="toggle-item availability-day-toggle"><span>${dayConfig.enabled ? 'Ativo' : 'Fechado'}</span><input type="checkbox" data-availability-field="enabled" ${dayConfig.enabled ? 'checked' : ''}></label>
+        </div>
+        <div class="availability-day-fields" ${dayConfig.enabled && availability.enabled ? '' : 'hidden'}>
+          <div class="availability-time-pair"><label>Início<input type="time" data-availability-field="start" value="${escapeHtml(dayConfig.start || '08:00')}"></label><label>Fim<input type="time" data-availability-field="end" value="${escapeHtml(dayConfig.end || '18:00')}"></label></div>
+          <label class="toggle-item availability-break-toggle"><span>Usar pausa / almoço</span><input type="checkbox" data-availability-field="breakEnabled" ${dayConfig.breakEnabled ? 'checked' : ''}></label>
+          <div class="availability-time-pair availability-break-fields" ${dayConfig.breakEnabled ? '' : 'hidden'}><label>Início da pausa<input type="time" data-availability-field="breakStart" value="${escapeHtml(dayConfig.breakStart || '12:00')}"></label><label>Fim da pausa<input type="time" data-availability-field="breakEnd" value="${escapeHtml(dayConfig.breakEnd || '13:00')}"></label></div>
+        </div>
+      </article>`;
+    }).join('');
+
+    const blockedDates = [...new Set(availability.blockedDates || [])].sort();
+    blockedTarget.innerHTML = blockedDates.length
+      ? blockedDates.map((dateKey) => `<div class="blocked-date-chip"><span>${escapeHtml(dateFromKey(dateKey).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).replace('.', ''))}</span><button type="button" data-remove-blocked-date="${escapeHtml(dateKey)}" aria-label="Remover data bloqueada">×</button></div>`).join('')
+      : '<span class="availability-empty-blocks">Nenhuma data específica bloqueada.</span>';
+
+    if (!availability.enabled) {
+      preview.innerHTML = '<strong>Horário livre nos dias ativos</strong><span>Ao criar um atendimento, você escolhe qualquer horário. Dias fechados e datas bloqueadas continuam sendo respeitados.</span>';
+      return;
+    }
+
+    const firstEnabledDay = Object.entries(availability.days || {}).find(([, item]) => item?.enabled);
+    if (!firstEnabledDay) {
+      preview.innerHTML = '<strong>Nenhum dia ativo</strong><span>Ative pelo menos um dia para gerar horários disponíveis.</span>';
+      return;
+    }
+    const [dayKey, dayConfig] = firstEnabledDay;
+    const slots = theoreticalSlotsForDay(dayConfig, Math.max(15, Number(availability.slotMinutes) || 60));
+    preview.innerHTML = `<div><strong>Exemplo · ${WEEKDAY_LABELS[Number(dayKey)]}</strong><span>${slots.length} ${slots.length === 1 ? 'horário disponível' : 'horários disponíveis'} na grade</span></div><div class="availability-preview-slots">${slots.slice(0, 10).map((slot) => `<span>${slot}</span>`).join('')}${slots.length > 10 ? `<span>+${slots.length - 10}</span>` : ''}</div>`;
+  }
+
+  function updateAvailabilityDayFromInput(input) {
+    const card = input.closest('[data-availability-day]');
+    if (!card) return;
+    const day = Number(card.dataset.availabilityDay);
+    if (!Number.isInteger(day) || day < 0 || day > 6) return;
+    const availability = availabilitySettings();
+    const dayConfig = availability.days[day] || (availability.days[day] = { ...defaultAvailability().days[day] });
+    const field = input.dataset.availabilityField;
+    if (!field) return;
+    if (field === 'enabled' || field === 'breakEnabled') dayConfig[field] = input.checked;
+    else dayConfig[field] = input.value;
+
+    const start = timeToMinutes(dayConfig.start);
+    const end = timeToMinutes(dayConfig.end);
+    if (dayConfig.enabled && start !== null && end !== null && end <= start) {
+      showToast('O horário final precisa ser maior que o horário inicial.');
+      dayConfig.end = minutesToTime(Math.min(1439, start + 60));
+    }
+    const breakStart = timeToMinutes(dayConfig.breakStart);
+    const breakEnd = timeToMinutes(dayConfig.breakEnd);
+    if (dayConfig.breakEnabled && breakStart !== null && breakEnd !== null && breakEnd <= breakStart) {
+      showToast('O fim da pausa precisa ser maior que o início.');
+      dayConfig.breakEnd = minutesToTime(Math.min(1439, breakStart + 60));
+    }
+    saveState();
+    renderAvailabilitySettings();
+  }
+
   function renderSettings() {
     document.getElementById('defaultGapInput').value = String(state.settings.defaultGap ?? DEFAULT_CONFIG.defaultGapMinutes ?? 15);
     document.getElementById('returnDaysSelect').value = String(state.settings.returnDays ?? DEFAULT_CONFIG.returnDays ?? 21);
+    const agendaDayPositionSelect = document.getElementById('agendaDayPositionSelect');
+    const agendaOverviewModeSelect = document.getElementById('agendaOverviewModeSelect');
+    if (agendaDayPositionSelect) agendaDayPositionSelect.value = state.settings.agendaDayPosition || 'above';
+    if (agendaOverviewModeSelect) agendaOverviewModeSelect.value = state.settings.agendaOverviewMode || 'week';
     const settingsName = document.getElementById('settingsWorkspaceName');
     const settingsOwner = document.getElementById('settingsOwnerDisplayName');
     const settingsWhatsapp = document.getElementById('settingsWorkspaceWhatsapp');
@@ -765,7 +1227,9 @@
     if (settingsOwner) settingsOwner.value = workspace?.ownerName || ownerAccount?.displayName || '';
     if (settingsWhatsapp) settingsWhatsapp.value = workspace?.whatsapp || '';
     updateCurrentUserUI();
+    renderThemeOptions();
     renderAgendaToggles();
+    renderAvailabilitySettings();
     document.getElementById('servicesSettings').innerHTML = getActiveServices().map((service) => `
       <article class="service-setting">
         <div class="service-main">
@@ -786,14 +1250,14 @@
   function saveWorkspaceSettings(event) {
     event.preventDefault();
     if (!workspace || !ownerAccount) {
-      showToast('Configure primeiro o acesso da proprietária pela tela inicial.');
+      showToast('Configure primeiro o acesso do responsável pela tela inicial.');
       return;
     }
     const name = document.getElementById('settingsWorkspaceName').value.trim();
     const ownerName = document.getElementById('settingsOwnerDisplayName').value.trim();
     const whatsapp = normalizePhone(document.getElementById('settingsWorkspaceWhatsapp').value);
     if (!name || !ownerName) {
-      showToast('Informe o nome do negócio e da profissional.');
+      showToast('Informe o nome do negócio e do responsável.');
       return;
     }
     saveWorkspace({ ...workspace, name, ownerName, whatsapp, updatedAt: new Date().toISOString() });
@@ -808,6 +1272,89 @@
     showToast('Identidade do espaço atualizada.');
   }
 
+  function updateAppointmentTimeControl(preferredTime = null) {
+    const availability = availabilitySettings();
+    const freeWrap = document.querySelector('.appointment-time-free-wrap');
+    const freeInput = document.getElementById('appointmentTime');
+    const slotWrap = document.getElementById('appointmentTimeSlotWrap');
+    const slotSelect = document.getElementById('appointmentTimeSlot');
+    const help = document.getElementById('appointmentTimeHelp');
+    const saveButton = document.getElementById('saveAppointmentBtn');
+    if (!freeWrap || !freeInput || !slotWrap || !slotSelect || !help || !saveButton) return;
+
+    if (!availability.enabled) {
+      freeWrap.hidden = false;
+      slotWrap.hidden = true;
+      freeInput.disabled = false;
+      freeInput.required = true;
+      slotSelect.disabled = true;
+      slotSelect.required = false;
+      if (preferredTime) freeInput.value = preferredTime;
+
+      const date = document.getElementById('appointmentDate').value;
+      if (date && isBlockedDate(date)) {
+        saveButton.disabled = true;
+        help.textContent = 'Essa data foi marcada como folga ou indisponível nos Ajustes.';
+        return;
+      }
+      if (date && !dayAvailability(date)?.enabled) {
+        saveButton.disabled = true;
+        help.textContent = 'Esse dia da semana está marcado como sem atendimento nos Ajustes.';
+        return;
+      }
+      saveButton.disabled = false;
+      help.textContent = date ? 'Horário livre dentro de um dia ativo.' : 'Escolha a data e informe o horário.';
+      return;
+    }
+
+    freeWrap.hidden = true;
+    slotWrap.hidden = false;
+    freeInput.disabled = true;
+    freeInput.required = false;
+    slotSelect.disabled = false;
+    slotSelect.required = true;
+
+    const date = document.getElementById('appointmentDate').value;
+    const serviceId = document.getElementById('appointmentService').value;
+    const dayConfig = date ? dayAvailability(date) : null;
+    const slots = date && serviceId ? availableSlotsFor(date, serviceId) : [];
+    const previous = preferredTime || slotSelect.value;
+
+    if (date && isBlockedDate(date)) {
+      slotSelect.innerHTML = '<option value="">Data bloqueada</option>';
+      slotSelect.value = '';
+      slotSelect.disabled = true;
+      saveButton.disabled = true;
+      help.textContent = 'Essa data foi marcada como folga ou indisponível nos Ajustes.';
+      return;
+    }
+
+    if (!dayConfig?.enabled) {
+      slotSelect.innerHTML = '<option value="">Dia sem atendimento configurado</option>';
+      slotSelect.value = '';
+      slotSelect.disabled = true;
+      saveButton.disabled = true;
+      help.textContent = 'Esse dia está marcado como fechado nos Ajustes.';
+      return;
+    }
+
+    if (!slots.length) {
+      slotSelect.innerHTML = '<option value="">Nenhum horário disponível</option>';
+      slotSelect.value = '';
+      slotSelect.disabled = true;
+      saveButton.disabled = true;
+      help.textContent = 'Todos os horários estão ocupados ou não comportam a duração deste serviço.';
+      return;
+    }
+
+    slotSelect.innerHTML = slots.map((slot) => `<option value="${slot}">${slot}</option>`).join('');
+    slotSelect.value = slots.includes(previous) ? previous : slots[0];
+    slotSelect.disabled = false;
+    saveButton.disabled = false;
+    const block = serviceBlockMinutes(serviceId);
+    help.textContent = `${slots.length} ${slots.length === 1 ? 'horário disponível' : 'horários disponíveis'} · bloco reservado de ${block} min.`;
+  }
+
   function populateAppointmentForm(date = agendaDate) {
     document.getElementById('appointmentClient').innerHTML = state.clients.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
     document.getElementById('appointmentService').innerHTML = getActiveServices().map((s) => `<option value="${s.id}">${escapeHtml(s.name)}${s.description ? ` — ${escapeHtml(s.description)}` : ''} · ${money(s.price)}</option>`).join('');
@@ -815,9 +1362,18 @@
     document.getElementById('appointmentTime').value = '09:00';
     document.getElementById('appointmentStatus').value = 'confirmed';
     document.getElementById('appointmentNotes').value = '';
+    updateAppointmentTimeControl('09:00');
   }
 
   function openAppointmentDialog() {
+    if (!state.clients.length) {
+      showToast('Cadastre pelo menos um cliente antes de criar um atendimento.');
+      return;
+    }
+    if (!getActiveServices().length) {
+      showToast('Cadastre pelo menos um serviço em Ajustes antes de criar um atendimento.');
+      return;
+    }
     populateAppointmentForm(agendaDate || today);
     document.getElementById('appointmentDialog').showModal();
   }
@@ -827,9 +1383,20 @@
     const clientId = document.getElementById('appointmentClient').value;
     const serviceId = document.getElementById('appointmentService').value;
     const date = document.getElementById('appointmentDate').value;
-    const time = document.getElementById('appointmentTime').value;
+    const availability = availabilitySettings();
+    const time = availability.enabled ? document.getElementById('appointmentTimeSlot').value : document.getElementById('appointmentTime').value;
     const service = getService(serviceId);
     if (!clientId || !serviceId || !date || !time || !service) return;
+    if (!isWorkingDate(date)) {
+      updateAppointmentTimeControl(time);
+      showToast(isBlockedDate(date) ? 'Essa data está bloqueada nos Ajustes.' : 'Esse dia está marcado como sem atendimento.');
+      return;
+    }
+    if (availability.enabled && !availableSlotsFor(date, serviceId).includes(time)) {
+      updateAppointmentTimeControl(time);
+      showToast('Esse horário não está mais disponível. Escolha outro horário.');
+      return;
+    }
     state.appointments.push({
       id: uid('apt'),
       clientId,
@@ -867,7 +1434,7 @@
     document.getElementById('clientForm').reset();
     renderAll();
     switchView('clients');
-    showToast('Cliente cadastrada.');
+    showToast('Cliente cadastrado.');
   }
 
   function saveExpense(event) {
@@ -965,7 +1532,7 @@
   function openWhatsApp(clientId, appointmentId = null) {
     const client = getClient(clientId);
     if (!client?.phone) return showToast('Cliente sem telefone cadastrado.');
-    let message = `Olá, ${firstName(client.name)}! 💅`;
+    let message = `Olá, ${firstName(client.name)}!`;
     if (appointmentId) {
       const apt = state.appointments.find((a) => a.id === appointmentId);
       if (apt) message += ` Passando para lembrar do seu horário em ${dateFromKey(apt.date).toLocaleDateString('pt-BR')} às ${apt.time} na ${workspaceName()}.`;
@@ -997,8 +1564,8 @@
     const price = Number(document.getElementById('servicePrice').value);
     const durationRaw = document.getElementById('serviceDuration').value.trim();
     const duration = durationRaw ? Number(durationRaw) : null;
-    if (!name || !Number.isFinite(price) || price < 0 || (duration !== null && (!Number.isFinite(duration) || duration <= 0))) {
-      return showToast('Confira nome, valor e duração do serviço.');
+    if (!name || !Number.isFinite(price) || price < 0 || (duration !== null && (!Number.isFinite(duration) || duration < 15))) {
+      return showToast('Confira os dados. A duração mínima é de 15 minutos.');
     }
     if (serviceEditingId) {
       const service = getService(serviceEditingId);
@@ -1075,6 +1642,32 @@
     const jump = event.target.closest('[data-view-jump]');
     if (jump) switchView(jump.dataset.viewJump);
 
+    const themeButton = event.target.closest('[data-theme-id]');
+    if (themeButton) {
+      applyPanelTheme(themeButton.dataset.themeId, { persist: true });
+      renderSettings();
+      showToast(`Tema ${THEMES_CONFIG[themeButton.dataset.themeId]?.label || ''} aplicado.`.trim());
+      return;
+    }
+
+    const agendaModeButton = event.target.closest('[data-agenda-mode]');
+    if (agendaModeButton) {
+      setAgendaOverviewMode(agendaModeButton.dataset.agendaMode);
+      return;
+    }
+
+    const agendaDateButton = event.target.closest('[data-agenda-date]');
+    if (agendaDateButton) {
+      agendaDate = agendaDateButton.dataset.agendaDate;
+      if (agendaDateButton.dataset.monthDay === 'true') {
+        agendaOverviewMode = 'week';
+      }
+      renderAgenda();
+      const target = agendaDateButton.dataset.monthDay === 'true' ? document.getElementById('agendaOverviewPanel') : document.getElementById('agendaDayPanel');
+      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
     if (event.target.closest('[data-action="new-appointment"]')) openAppointmentDialog();
     if (event.target.closest('[data-action="new-client"]')) document.getElementById('clientDialog').showModal();
 
@@ -1128,6 +1721,14 @@
 
   document.getElementById('prevDayBtn').addEventListener('click', () => { agendaDate = shiftDate(agendaDate, -1); renderAgenda(); });
   document.getElementById('nextDayBtn').addEventListener('click', () => { agendaDate = shiftDate(agendaDate, 1); renderAgenda(); });
+  document.getElementById('prevOverviewBtn').addEventListener('click', () => {
+    agendaDate = agendaOverviewMode === 'month' ? shiftMonthKey(agendaDate, -1) : shiftDate(agendaDate, -7);
+    renderAgenda();
+  });
+  document.getElementById('nextOverviewBtn').addEventListener('click', () => {
+    agendaDate = agendaOverviewMode === 'month' ? shiftMonthKey(agendaDate, 1) : shiftDate(agendaDate, 7);
+    renderAgenda();
+  });
   document.getElementById('appointmentForm').addEventListener('submit', saveAppointment);
   document.getElementById('clientForm').addEventListener('submit', saveClient);
   document.getElementById('expenseForm').addEventListener('submit', saveExpense);
@@ -1172,10 +1773,68 @@
     showToast('Período de retorno atualizado.');
   });
 
-  document.getElementById('brandSettingsBtn').addEventListener('click', () => switchView('settings'));
-  document.getElementById('profileBtn').addEventListener('click', () => {
-    if (window.matchMedia('(min-width: 1080px)').matches) switchView('settings');
+  document.getElementById('availabilityEnabled').addEventListener('change', (event) => {
+    availabilitySettings().enabled = event.target.checked;
+    saveState();
+    renderAvailabilitySettings();
+    showToast(event.target.checked ? 'Grade de horários ativada.' : 'Grade desligada. Os dias ativos continuam sendo respeitados.');
   });
+
+  document.getElementById('availabilitySlotMinutes').addEventListener('change', (event) => {
+    const parsed = Number(event.target.value);
+    const value = Number.isFinite(parsed) ? Math.max(15, Math.round(parsed / 5) * 5) : 60;
+    availabilitySettings().slotMinutes = value;
+    event.target.value = String(value);
+    saveState();
+    renderAvailabilitySettings();
+    showToast(`Grade de horários definida a cada ${value} min.`);
+  });
+
+  document.getElementById('availabilityDays').addEventListener('change', (event) => {
+    const input = event.target.closest('[data-availability-field]');
+    if (input) updateAvailabilityDayFromInput(input);
+  });
+
+  document.getElementById('addBlockedDateBtn').addEventListener('click', () => {
+    const input = document.getElementById('availabilityBlockedDate');
+    const dateKey = input.value;
+    if (!dateKey) return showToast('Escolha uma data para bloquear.');
+    const availability = availabilitySettings();
+    availability.blockedDates = [...new Set([...(availability.blockedDates || []), dateKey])].sort();
+    input.value = '';
+    saveState();
+    renderAvailabilitySettings();
+    showToast('Data bloqueada para novos atendimentos.');
+  });
+
+  document.getElementById('availabilityBlockedDates').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-remove-blocked-date]');
+    if (!button) return;
+    const dateKey = button.dataset.removeBlockedDate;
+    const availability = availabilitySettings();
+    availability.blockedDates = (availability.blockedDates || []).filter((item) => item !== dateKey);
+    saveState();
+    renderAvailabilitySettings();
+    showToast('Data liberada novamente.');
+  });
+
+  document.getElementById('appointmentDate').addEventListener('change', () => updateAppointmentTimeControl());
+  document.getElementById('appointmentService').addEventListener('change', () => updateAppointmentTimeControl());
+
+  document.getElementById('agendaDayPositionSelect').addEventListener('change', (event) => {
+    state.settings.agendaDayPosition = event.target.value === 'below' ? 'below' : 'above';
+    saveState();
+    applyAgendaSectionOrder();
+    showToast('Posição da agenda do dia atualizada.');
+  });
+
+  document.getElementById('agendaOverviewModeSelect').addEventListener('change', (event) => {
+    setAgendaOverviewMode(event.target.value, { persistDefault: true });
+    showToast('Visualização padrão da agenda atualizada.');
+  });
+
+  document.getElementById('brandSettingsBtn').addEventListener('click', () => switchView('settings'));
+  document.getElementById('profileBtn').addEventListener('click', () => switchView('settings'));
 
   document.getElementById('workspaceSettingsForm').addEventListener('submit', saveWorkspaceSettings);
   document.getElementById('onboardingForm').addEventListener('submit', handleOnboarding);
@@ -1197,4 +1856,11 @@
   applyConfig();
   if (hasAuthSession()) openAuthenticatedApp();
   else openLoginScreen();
+
+  // Atualiza estados como “em andamento” automaticamente enquanto o painel estiver aberto.
+  window.setInterval(() => {
+    if (!hasAuthSession()) return;
+    renderToday();
+    renderAgenda();
+  }, 60000);
 })();

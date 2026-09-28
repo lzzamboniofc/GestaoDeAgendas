@@ -1,4 +1,4 @@
-const CACHE = 'gestao-negocio-v10';
+const CACHE = 'gestao-negocio-v16';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest',
   './assets/css/style.css', './assets/js/config.js', './assets/js/app.js', './assets/icons/icon.svg'

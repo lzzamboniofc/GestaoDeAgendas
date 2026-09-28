@@ -25,7 +25,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Poppins", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 button, input, select, textarea { font: inherit; }
@@ -52,7 +52,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .topbar h1 {
   margin: 2px 0 0;
-  font: 600 clamp(1.8rem, 5vw, 2.6rem)/1.04 Georgia, "Times New Roman", serif;
+  font: 600 clamp(1.8rem, 5vw, 2.6rem)/1.04 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -.035em;
 }
 .eyebrow {
@@ -114,7 +114,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .today-date { margin: 0 0 10px; color: rgba(255,255,255,.68); font-size: .88rem; font-weight: 650; }
 .today-hero h2, .finance-intro h2, .settings-section h2 {
   margin: 0;
-  font: 500 clamp(2.5rem, 10vw, 5.6rem)/.92 Georgia, "Times New Roman", serif;
+  font: 500 clamp(2.5rem, 10vw, 5.6rem)/.92 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -.055em;
   max-width: 760px;
 }
@@ -263,7 +263,7 @@ input[type="checkbox"]:checked::after { transform: translateX(18px); }
 .client-row .chevron { color: var(--muted); }
 .client-detail-panel { padding: 22px; min-height: 330px; }
 .client-detail-header { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
-.client-detail-header h2 { margin: 2px 0 4px; font: 600 2rem/1 Georgia, serif; letter-spacing: -.04em; }
+.client-detail-header h2 { margin: 2px 0 4px; font: 600 2rem/1 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.04em; }
 .client-detail-header p { margin: 0; color: var(--muted); }
 .client-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin: 22px 0; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
 .client-stats div { background: var(--surface); padding: 14px; }
@@ -333,7 +333,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 .sheet-dialog::backdrop { background: rgba(31,20,27,.55); backdrop-filter: blur(4px); }
 .sheet-form { padding: 22px; overflow: auto; }
 .dialog-heading { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 20px; }
-.dialog-heading h2 { margin: 3px 0 0; font: 600 2rem/1 Georgia, serif; letter-spacing: -.04em; }
+.dialog-heading h2 { margin: 3px 0 0; font: 600 2rem/1 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.04em; }
 .form-stack { display: grid; gap: 14px; }
 .form-stack label { display: grid; gap: 7px; font-size: .78rem; font-weight: 800; color: var(--muted); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -375,7 +375,7 @@ textarea { resize: vertical; }
     display: flex; flex-direction: column; position: sticky; top: 0; height: 100dvh; padding: 22px 14px;
     background: var(--accent-dark); color: #fff;
   }
-  .brand-mark { width: 52px; height: 52px; margin: 0 auto 28px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; display: grid; place-items: center; font-family: Georgia, serif; font-weight: 700; }
+  .brand-mark { width: 52px; height: 52px; margin: 0 auto 28px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; display: grid; place-items: center; font-family: "Poppins", Inter, ui-sans-serif, system-ui, sans-serif; font-weight: 700; }
   .rail-nav { display: grid; gap: 8px; }
   .desktop-rail .nav-item { min-height: 64px; }
   .desktop-rail .nav-item.is-active { background: rgba(255,255,255,.10); }
@@ -1363,7 +1363,7 @@ body.auth-locked {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font: 700 1.1rem/1 Georgia, serif;
+  font: 700 1.1rem/1 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: .03em;
 }
 
@@ -1379,7 +1379,7 @@ body.auth-locked {
 
 .login-brand-copy h1 {
   margin: 8px 0 18px;
-  font: 600 clamp(2.6rem, 5vw, 4.8rem)/.94 Georgia, serif;
+  font: 600 clamp(2.6rem, 5vw, 4.8rem)/.94 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -.055em;
 }
 
@@ -1422,7 +1422,7 @@ body.auth-locked {
 
 .login-form h2 {
   margin: 8px 0 10px;
-  font: 600 clamp(2.25rem, 4vw, 3.4rem)/1 Georgia, serif;
+  font: 600 clamp(2.25rem, 4vw, 3.4rem)/1 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -.045em;
   color: var(--ink);
 }
@@ -1812,12 +1812,12 @@ body.auth-locked {
   place-items: center;
   border: 1px solid rgba(255,255,255,.28);
   border-radius: 50%;
-  font: 700 1.1rem/1 Georgia, serif;
+  font: 700 1.1rem/1 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
 }
 .onboarding-copy .eyebrow { color: rgba(255,255,255,.58); }
 .onboarding-copy h1 {
   margin: 8px 0 16px;
-  font: 600 clamp(2.7rem, 5vw, 4.8rem)/.95 Georgia, serif;
+  font: 600 clamp(2.7rem, 5vw, 4.8rem)/.95 "Poppins", Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -.055em;
 }
 .onboarding-copy > p:not(.eyebrow) {
@@ -1902,4 +1902,1677 @@ body.auth-locked {
 @media (max-width: 520px) {
   .first-access-box { align-items: flex-start; flex-direction: column; }
   .onboarding-actions { grid-template-columns: 1fr; }
+}
+
+/* v11 — identidade genérica, perfil mobile e agenda dia/semana/mês */
+:root {
+  --login-accent: #536273;
+  --login-accent-dark: #171b20;
+  --login-accent-soft: #e9edf1;
+}
+
+.brand-logo-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.login-screen,
+.onboarding-screen {
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--login-accent) 14%, transparent), transparent 30%),
+    radial-gradient(circle at 90% 88%, color-mix(in srgb, var(--login-accent-dark) 10%, transparent), transparent 32%),
+    var(--bg);
+}
+
+.login-shell,
+.onboarding-shell {
+  border-color: color-mix(in srgb, var(--login-accent-dark) 28%, transparent);
+  box-shadow: 0 28px 90px color-mix(in srgb, var(--login-accent-dark) 14%, transparent);
+}
+
+.login-brand-panel,
+.onboarding-copy {
+  background:
+    radial-gradient(circle at 85% 12%, color-mix(in srgb, var(--login-accent) 40%, transparent), transparent 36%),
+    linear-gradient(145deg, var(--login-accent-dark), color-mix(in srgb, var(--login-accent-dark) 72%, var(--login-accent)));
+}
+
+.login-brand-mark,
+.login-mobile-mark,
+.onboarding-mark {
+  overflow: hidden;
+  padding: 5px;
+  background: rgba(255,255,255,.08);
+}
+
+.login-mobile-mark {
+  border-color: color-mix(in srgb, var(--login-accent) 35%, transparent);
+  background: var(--login-accent-soft);
+}
+
+.login-form > .eyebrow,
+.first-access-button {
+  color: var(--login-accent);
+}
+
+.login-input-wrap input:focus {
+  border-color: var(--login-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--login-accent) 14%, transparent);
+}
+
+.login-remember input[type="checkbox"] { accent-color: var(--login-accent); }
+.login-submit {
+  border-color: var(--login-accent-dark);
+  background: var(--login-accent-dark);
+  box-shadow: 0 10px 25px color-mix(in srgb, var(--login-accent-dark) 20%, transparent);
+}
+.login-submit:hover { background: color-mix(in srgb, var(--login-accent-dark) 82%, var(--login-accent)); }
+
+/* O perfil precisa continuar disponível também no celular. */
+@media (max-width: 1079px) {
+  .avatar-button {
+    display: inline-grid !important;
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+}
+
+.agenda-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.agenda-day,
+.agenda-overview {
+  border: 1.5px solid rgba(65, 51, 44, .28);
+}
+
+.agenda-block-heading {
+  margin-bottom: 14px;
+}
+
+.agenda-overview {
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: 0 12px 34px rgba(58,40,32,.055);
+  overflow: hidden;
+}
+
+.agenda-overview-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.agenda-overview-head h3 {
+  margin: 4px 0 0;
+  font-size: 1.2rem;
+  text-transform: capitalize;
+}
+
+.agenda-overview-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agenda-mode-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1.5px solid rgba(65, 51, 44, .28);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.agenda-mode-switch button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.agenda-mode-switch button.is-active {
+  background: var(--surface);
+  color: var(--accent-dark);
+  box-shadow: 0 3px 10px rgba(45,34,28,.08);
+}
+
+.agenda-period-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.agenda-period-nav .icon-button {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+}
+
+.agenda-week-view {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(138px, 1fr));
+  gap: 9px;
+  overflow-x: auto;
+  padding: 2px 1px 9px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.week-day-card {
+  min-height: 178px;
+  padding: 12px;
+  border: 1.5px solid rgba(65, 51, 44, .22);
+  border-radius: 15px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  scroll-snap-align: start;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.week-day-card:hover { border-color: var(--accent); }
+.week-day-card.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 24%, #fff);
+}
+.week-day-card.is-today .week-day-top strong { color: var(--accent); }
+
+.week-day-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.week-day-top > span { display: grid; gap: 2px; }
+.week-day-top b { color: var(--muted); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
+.week-day-top strong { font-size: 1.25rem; }
+.week-day-top > i {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: .68rem;
+  font-style: normal;
+  font-weight: 850;
+}
+.week-day-list { display: grid; gap: 7px; }
+.week-appointment {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 7px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(65,51,44,.13);
+}
+.week-appointment b { grid-row: 1 / span 2; font-size: .7rem; color: var(--accent-dark); }
+.week-appointment em { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .74rem; font-style: normal; font-weight: 780; }
+.week-appointment small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: .65rem; }
+.week-empty, .week-more { color: var(--muted); font-size: .7rem; }
+
+.agenda-month-view { overflow-x: auto; padding-bottom: 4px; }
+.month-weekdays,
+.month-grid {
+  min-width: 620px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 7px;
+}
+.month-weekdays { margin-bottom: 7px; }
+.month-weekdays span { padding: 0 7px; color: var(--muted); font-size: .68rem; font-weight: 800; text-align: center; }
+.month-day,
+.month-day-spacer {
+  min-height: 72px;
+  border-radius: 13px;
+}
+.month-day {
+  position: relative;
+  padding: 9px;
+  border: 1.5px solid rgba(65,51,44,.2);
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+}
+.month-day:hover { border-color: var(--accent); }
+.month-day.is-selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 24%, #fff); }
+.month-day.is-today .month-day-number { color: var(--accent); }
+.month-day-number { font-weight: 850; }
+.month-day-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent-dark);
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 850;
+}
+.month-day-count.is-empty { background: var(--surface-2); color: var(--muted); }
+
+.agenda-view-settings { margin-top: 10px; }
+.agenda-visibility-settings { margin-top: 18px; padding-top: 18px; border-top: 1.5px solid rgba(65,51,44,.22); }
+.agenda-visibility-settings h4 { margin: 0 0 5px; font-size: .9rem; }
+
+@media (max-width: 719px) {
+  .agenda-overview { padding: 16px; }
+  .agenda-overview-head { align-items: stretch; flex-direction: column; }
+  .agenda-overview-actions { justify-content: space-between; }
+  .agenda-week-view { grid-template-columns: repeat(7, minmax(148px, 72vw)); margin-right: -16px; padding-right: 16px; }
+  .week-day-card { min-height: 166px; }
+  .month-weekdays, .month-grid { min-width: 560px; }
+  .setting-row { align-items: flex-start; }
+  .agenda-view-settings .setting-row { flex-direction: column; gap: 9px; }
+  .agenda-view-settings .setting-row select { width: 100%; max-width: none; }
+}
+
+@media (max-width: 540px) {
+  .topbar-actions { gap: 6px; }
+  .topbar-new-appointment { padding-inline: 9px; }
+  .avatar-button { width: 38px; min-width: 38px; height: 38px; flex-basis: 38px; }
+}
+.login-brand-mark::after,
+.login-mobile-mark::after,
+.onboarding-mark::after {
+  content: "P";
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  font: 800 1rem/1 system-ui, sans-serif;
+  color: currentColor;
+}
+.login-brand-mark.has-logo::after,
+.login-mobile-mark.has-logo::after,
+.onboarding-mark.has-logo::after { display: none; }
+
+/* v12 — temas e estados visuais da agenda */
+:root {
+  --status-upcoming: #4f7fae;
+  --status-progress: #7a62a7;
+  --status-paid: #4f815f;
+  --status-pending: #c69b37;
+  --status-past: #a67b36;
+  --status-cancelled: #b75b5d;
+  --status-refunded: #9a6b72;
+}
+
+/* Mantém as superfícies do painel dependentes do tema escolhido. */
+body { background: var(--bg); }
+.desktop-rail,
+.mobile-nav { background: var(--accent-dark); }
+.icon-button,
+.avatar-button:not(#profileBtn) { border-color: var(--line); }
+.avatar-button { background: var(--accent-dark); }
+.schedule-panel,
+.insight-block,
+.panel,
+.client-list-panel,
+.client-detail-panel,
+.agenda-day,
+.agenda-sidecard,
+.agenda-overview,
+.settings-section,
+.finance-summary,
+.sheet-dialog { background: var(--surface); border-color: var(--line); }
+select, input, textarea,
+.search-field,
+.service-edit-button { background: var(--surface); border-color: var(--field-border); }
+.week-day-card,
+.month-day { background: var(--surface); border-color: var(--line); }
+.agenda-mode-switch,
+.week-day-top > i,
+.month-day-count.is-empty { background: var(--surface-2); }
+.agenda-mode-switch { border-color: var(--line); }
+.week-appointment { border-top-color: var(--line); }
+.agenda-visibility-settings { border-top-color: var(--line); }
+
+/* Seletor de temas */
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.theme-option {
+  position: relative;
+  min-height: 96px;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 24px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  text-align: left;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.theme-option:hover { border-color: var(--accent); transform: translateY(-1px); }
+.theme-option.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.theme-preview {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+}
+.theme-preview i:first-child { grid-row: 1 / -1; background: var(--theme-dark); }
+.theme-preview i:nth-child(2) { background: var(--theme-accent); }
+.theme-preview i:nth-child(3) { background: var(--theme-soft); }
+.theme-copy { min-width: 0; display: grid; gap: 4px; }
+.theme-copy strong { font-size: .88rem; }
+.theme-copy small { color: var(--muted); font-size: .7rem; line-height: 1.35; }
+.theme-check {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: transparent;
+  font-size: .72rem;
+  font-weight: 900;
+}
+.theme-option.is-selected .theme-check { background: var(--accent); color: #fff; }
+
+/* Legenda e status da agenda */
+.agenda-visual-legend { gap: 9px 15px; }
+.status-dot.upcoming { background: var(--status-upcoming); }
+.status-dot.in-progress { background: var(--status-progress); }
+.status-dot.paid { background: var(--status-paid); }
+.status-dot.payment-pending { background: var(--status-pending); }
+.status-dot.cancelled { background: var(--status-cancelled); }
+
+.appointment-card {
+  margin-right: 2px;
+  border-radius: 12px;
+  padding: 10px 10px 16px 18px;
+  border: 1px solid transparent;
+  border-left: 3px solid var(--appointment-state-color, var(--accent));
+  background: color-mix(in srgb, var(--appointment-state-color, var(--accent)) 5%, var(--surface));
+}
+.appointment-card::before { background: var(--appointment-state-color, var(--accent)); }
+.appointment-card.visual-upcoming { --appointment-state-color: var(--status-upcoming); }
+.appointment-card.visual-in-progress { --appointment-state-color: var(--status-progress); }
+.appointment-card.visual-paid { --appointment-state-color: var(--status-paid); }
+.appointment-card.visual-payment-pending,
+.appointment-card.visual-past-unsettled { --appointment-state-color: var(--status-pending); }
+.appointment-card.visual-cancelled { --appointment-state-color: var(--status-cancelled); }
+.appointment-card.visual-refunded { --appointment-state-color: var(--status-refunded); }
+
+.appointment-state-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: .69rem;
+  font-weight: 850;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+}
+.appointment-state-chip.state-upcoming { color: #35668f; background: #e6f0f8; }
+.appointment-state-chip.state-in-progress { color: #654c91; background: #eee9f7; }
+.appointment-state-chip.state-paid { color: #3f6e4d; background: #e5f0e8; }
+.appointment-state-chip.state-payment-pending,
+.appointment-state-chip.state-past-unsettled { color: #8a6719; background: #f7edcf; }
+.appointment-state-chip.state-cancelled { color: #94484b; background: #f8e5e6; }
+.appointment-state-chip.state-refunded { color: #76525a; background: #f1e8ea; }
+
+/* Estado também aparece na visão semanal. */
+.week-appointment { position: relative; padding-right: 12px; }
+.week-state-dot {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.week-appointment.visual-upcoming .week-state-dot { background: var(--status-upcoming); }
+.week-appointment.visual-in-progress .week-state-dot { background: var(--status-progress); }
+.week-appointment.visual-paid .week-state-dot { background: var(--status-paid); }
+.week-appointment.visual-payment-pending .week-state-dot,
+.week-appointment.visual-past-unsettled .week-state-dot { background: var(--status-pending); }
+.week-appointment.visual-cancelled .week-state-dot { background: var(--status-cancelled); }
+.week-appointment.visual-refunded .week-state-dot { background: var(--status-refunded); }
+
+/* Pequeno resumo cromático dentro do calendário mensal. */
+.month-state-dots {
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  max-width: calc(100% - 42px);
+}
+.month-state-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.month-state-dot.visual-upcoming { background: var(--status-upcoming); }
+.month-state-dot.visual-in-progress { background: var(--status-progress); }
+.month-state-dot.visual-paid { background: var(--status-paid); }
+.month-state-dot.visual-payment-pending,
+.month-state-dot.visual-past-unsettled { background: var(--status-pending); }
+.month-state-dot.visual-cancelled { background: var(--status-cancelled); }
+.month-state-dot.visual-refunded { background: var(--status-refunded); }
+
+@media (max-width: 620px) {
+  .theme-options { grid-template-columns: 1fr; }
+  .theme-option { min-height: 82px; }
+  .agenda-visual-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Garante que o estado temporal/financeiro prevaleça sobre os status antigos. */
+.appointment-card.visual-upcoming::before { background: var(--status-upcoming); }
+.appointment-card.visual-in-progress::before { background: var(--status-progress); }
+.appointment-card.visual-paid::before { background: var(--status-paid); }
+.appointment-card.visual-payment-pending::before,
+.appointment-card.visual-past-unsettled::before { background: var(--status-pending); }
+.appointment-card.visual-cancelled::before { background: var(--status-cancelled); }
+.appointment-card.visual-refunded::before { background: var(--status-refunded); }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-color: color-mix(in srgb, var(--accent) 32%, transparent);
+}
+.icon-button { background: var(--surface); }
+
+/* v13 — agenda realmente mobile-first, sem rolagem horizontal */
+.agenda-week-view[hidden],
+.agenda-month-view[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 719px) {
+  .agenda-overview {
+    padding: 14px;
+  }
+
+  .agenda-overview-head {
+    margin-bottom: 14px;
+  }
+
+  .agenda-overview-actions {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .agenda-mode-switch {
+    flex: 1 1 auto;
+  }
+
+  .agenda-mode-switch button {
+    flex: 1 1 50%;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+
+  .agenda-period-nav {
+    flex: 0 0 auto;
+  }
+
+  .agenda-week-view {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+
+  .week-day-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 11px;
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 12px;
+    align-items: stretch;
+    border-radius: 13px;
+    scroll-snap-align: none;
+  }
+
+  .week-day-top {
+    min-width: 0;
+    margin: 0;
+    padding-right: 10px;
+    border-right: 1px solid rgba(65, 51, 44, .14);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 7px;
+  }
+
+  .week-day-top > span {
+    gap: 0;
+  }
+
+  .week-day-top b {
+    font-size: .62rem;
+  }
+
+  .week-day-top strong {
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+
+  .week-day-top > i {
+    min-width: 22px;
+    height: 22px;
+    padding-inline: 5px;
+  }
+
+  .week-day-list {
+    min-width: 0;
+    align-content: start;
+  }
+
+  .week-appointment {
+    min-width: 0;
+    grid-template-columns: 42px minmax(0, 1fr);
+    padding-right: 13px;
+  }
+
+  .week-appointment em,
+  .week-appointment small {
+    min-width: 0;
+  }
+
+  .agenda-month-view {
+    width: 100%;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .month-weekdays,
+  .month-grid {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .month-weekdays {
+    margin-bottom: 4px;
+  }
+
+  .month-weekdays span {
+    min-width: 0;
+    padding: 0;
+    font-size: .58rem;
+    letter-spacing: -.01em;
+  }
+
+  .month-day,
+  .month-day-spacer {
+    min-width: 0;
+    min-height: 54px;
+    border-radius: 9px;
+  }
+
+  .month-day {
+    padding: 5px 4px;
+  }
+
+  .month-day-number {
+    font-size: .78rem;
+  }
+
+  .month-day-count {
+    right: 4px;
+    bottom: 4px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    font-size: .56rem;
+  }
+
+  .month-state-dots {
+    left: 4px;
+    bottom: 6px;
+    gap: 2px;
+    max-width: calc(100% - 25px);
+  }
+
+  .month-state-dot {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+@media (max-width: 380px) {
+  .agenda-overview-actions {
+    align-items: stretch;
+  }
+
+  .agenda-period-nav .icon-button {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+  }
+
+  .month-weekdays span {
+    font-size: .54rem;
+  }
+
+  .month-day,
+  .month-day-spacer {
+    min-height: 50px;
+  }
+}
+
+@media (min-width: 720px) {
+  .agenda-week-view {
+    overflow-x: visible;
+  }
+
+  .agenda-month-view {
+    overflow-x: visible;
+  }
+
+  .month-weekdays,
+  .month-grid {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* v14 — disponibilidade configurável da agenda */
+.availability-settings-section {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+.availability-heading {
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.availability-master-toggle {
+  flex: 0 0 auto;
+  border-top: 0;
+  padding: 0;
+  gap: 10px;
+}
+
+.availability-master-toggle > span {
+  max-width: 110px;
+  text-align: right;
+  line-height: 1.25;
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.availability-config[hidden],
+.availability-day-fields[hidden],
+.availability-break-fields[hidden],
+.appointment-time-slot-wrap[hidden],
+.appointment-time-free-wrap[hidden] {
+  display: none !important;
+}
+
+.availability-config {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.availability-slot-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+
+.availability-slot-setting strong,
+.availability-day-head strong,
+.availability-preview strong {
+  display: block;
+  color: var(--ink);
+  font-size: .9rem;
+}
+
+.availability-slot-setting small,
+.availability-day-head small,
+.availability-preview span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .75rem;
+  line-height: 1.4;
+}
+
+.availability-slot-input {
+  grid-template-columns: 68px auto;
+}
+
+.availability-slot-input input[type="number"] {
+  width: 68px;
+}
+
+.availability-days {
+  display: grid;
+  gap: 10px;
+}
+
+.availability-day {
+  border: 1.5px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.availability-day.is-enabled {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+
+.availability-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+}
+
+.availability-day-toggle {
+  padding: 0;
+  border: 0;
+  gap: 8px;
+}
+
+.availability-day-toggle > span {
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+.availability-day-fields {
+  display: grid;
+  gap: 13px;
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--line);
+}
+
+.availability-time-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: 13px;
+}
+
+.availability-time-pair label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.availability-time-pair input {
+  min-width: 0;
+}
+
+.availability-break-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  font-size: .78rem;
+  font-weight: 750;
+}
+
+.availability-break-toggle input[type="checkbox"] {
+  width: 18px;
+  min-width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.availability-break-fields {
+  padding-top: 0;
+}
+
+.availability-preview {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 45%, var(--line));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--accent-soft) 26%, var(--surface));
+}
+
+.availability-preview-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.availability-preview-slots span {
+  margin: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: .7rem;
+  font-weight: 750;
+}
+
+.appointment-time-slot-wrap,
+.appointment-time-free-wrap {
+  display: grid;
+  gap: 5px;
+}
+
+.field-help {
+  display: block;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+#saveAppointmentBtn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .availability-heading {
+    display: grid;
+  }
+
+  .availability-master-toggle {
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 0 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .availability-master-toggle > span {
+    max-width: none;
+    text-align: left;
+  }
+
+  .availability-slot-setting {
+    align-items: flex-end;
+  }
+
+  .availability-day-head {
+    padding: 13px 12px;
+  }
+
+  .availability-day-fields {
+    padding: 0 12px 12px;
+  }
+
+  .availability-time-pair {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 760px) {
+  .availability-days {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .availability-preview {
+    grid-template-columns: minmax(180px, .55fr) minmax(0, 1.45fr);
+    align-items: center;
+  }
+}
+
+/* v15 — ajustes organizados, tema coerente e dias de atendimento independentes */
+
+/* Tipografia única em todo o produto. */
+button,
+input,
+select,
+textarea {
+  font-family: "Poppins", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Remoção dos últimos tons fixos herdados das versões iniciais. */
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.schedule-panel,
+.insight-block,
+.panel,
+.client-list-panel,
+.client-detail-panel,
+.agenda-day,
+.agenda-sidecard,
+.agenda-overview,
+.settings-section,
+.finance-summary {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--accent-dark) 6%, transparent);
+}
+
+select,
+input,
+textarea,
+.search-field,
+.service-edit-button {
+  color: var(--ink);
+  background: var(--surface);
+  border-color: var(--field-border);
+}
+
+select:hover,
+input:hover,
+textarea:hover {
+  border-color: color-mix(in srgb, var(--accent) 66%, var(--field-border));
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.desktop-rail,
+.mobile-nav {
+  background: color-mix(in srgb, var(--accent-dark) 96%, #000);
+}
+
+.mobile-nav {
+  border-color: color-mix(in srgb, var(--accent-soft) 16%, transparent);
+  box-shadow: 0 18px 45px color-mix(in srgb, var(--accent-dark) 30%, transparent);
+}
+
+.nav-create,
+.mobile-nav .nav-create {
+  background: var(--surface);
+  color: var(--accent-dark);
+}
+
+.desktop-rail .nav-item.is-active {
+  background: color-mix(in srgb, var(--nav-active) 28%, transparent);
+}
+
+.sheet-dialog {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: 0 30px 90px color-mix(in srgb, var(--accent-dark) 22%, transparent);
+}
+
+.sheet-dialog::backdrop {
+  background: color-mix(in srgb, var(--accent-dark) 58%, transparent);
+}
+
+.form-stack label,
+.workspace-settings-form label {
+  color: var(--muted);
+}
+
+.service-duration,
+.account-role-badge {
+  color: var(--accent-dark);
+  background: var(--surface-2);
+}
+
+/* Hero financeiro acompanha o tema escolhido. Cores semânticas continuam nos indicadores. */
+.finance-dashboard-hero {
+  background:
+    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--accent-soft) 18%, transparent), transparent 34%),
+    linear-gradient(145deg, var(--accent-dark), color-mix(in srgb, var(--accent-dark) 72%, var(--accent)));
+  box-shadow: 0 18px 42px color-mix(in srgb, var(--accent-dark) 18%, transparent);
+}
+
+.finance-chart-card,
+.finance-detail-panel {
+  border-color: var(--finance-border, var(--line));
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--accent-dark) 6%, transparent);
+}
+
+.collapse-toggle {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.collapse-toggle:hover {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+/* A bolinha da agenda usa um halo da própria cor do estado, sem anel branco. */
+.appointment-card::before {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--appointment-state-color, var(--accent)) 18%, transparent);
+}
+
+/* Ajustes: mobile mantém leitura linear; desktop forma um bloco equilibrado. */
+.routine-settings-section,
+.theme-settings-section,
+.agenda-settings-section {
+  min-width: 0;
+}
+
+.theme-settings-section .theme-options {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.theme-settings-section .theme-option {
+  min-height: 70px;
+  grid-template-columns: 44px minmax(0, 1fr) 24px;
+  padding: 10px;
+}
+
+.theme-settings-section .theme-preview {
+  width: 44px;
+  height: 44px;
+}
+
+@media (min-width: 920px) {
+  .settings-grid {
+    grid-template-columns: minmax(300px, .82fr) minmax(0, 1.18fr);
+    align-items: start;
+  }
+
+  .routine-settings-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .theme-settings-section {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .agenda-settings-section {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .theme-settings-section .theme-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Dias de atendimento existem mesmo sem grade fixa. */
+.availability-config {
+  display: grid;
+  gap: 18px;
+}
+
+.availability-fixed-config[hidden],
+.availability-day-fields[hidden],
+.availability-break-fields[hidden] {
+  display: none !important;
+}
+
+.availability-fixed-config {
+  display: grid;
+  gap: 16px;
+  padding-top: 17px;
+  border-top: 1.5px solid var(--line);
+}
+
+.availability-days-heading strong,
+.availability-specific-copy strong {
+  display: block;
+  color: var(--ink);
+  font-size: .9rem;
+}
+
+.availability-days-heading small,
+.availability-specific-copy small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.availability-day {
+  border-color: var(--line);
+  background: var(--surface);
+}
+
+.availability-day.is-enabled {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+}
+
+.availability-day-fields {
+  border-top-color: var(--line);
+}
+
+/* Pausa/almoço usa exatamente o mesmo switch do restante do sistema. */
+.availability-break-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0 0;
+  border-top: 0;
+  color: var(--ink);
+  font-size: .78rem;
+  font-weight: 750;
+}
+
+.availability-break-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 46px;
+  min-width: 46px;
+  max-width: 46px;
+  height: 26px;
+  min-height: 26px;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 46px;
+  border: 1px solid color-mix(in srgb, var(--accent-dark) 22%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 28%, var(--surface));
+  position: relative;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.availability-break-toggle input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--accent-dark) 18%, transparent);
+  transform: translateX(0);
+  transition: transform .2s ease;
+}
+
+.availability-break-toggle input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.availability-break-toggle input[type="checkbox"]:checked::after {
+  transform: translateX(20px);
+}
+
+.availability-specific-days {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-2) 56%, var(--surface));
+}
+
+.availability-date-adder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 9px;
+}
+
+.availability-date-adder input,
+.availability-date-adder button {
+  min-height: 44px;
+}
+
+.availability-blocked-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.blocked-date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 5px 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.blocked-date-chip button {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.availability-empty-blocks {
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+.availability-preview {
+  border-color: color-mix(in srgb, var(--accent) 46%, var(--line));
+  background: color-mix(in srgb, var(--accent-soft) 24%, var(--surface));
+}
+
+/* Switches sempre derivam do tema atual. */
+.toggle-item input[type="checkbox"],
+.switch-setting input[type="checkbox"] {
+  border-color: color-mix(in srgb, var(--accent-dark) 22%, transparent);
+  background: color-mix(in srgb, var(--muted) 28%, var(--surface));
+}
+
+.toggle-item input[type="checkbox"]::after,
+.switch-setting input[type="checkbox"]::after {
+  background: var(--surface);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--accent-dark) 18%, transparent);
+}
+
+.toggle-item input[type="checkbox"]:focus-visible,
+.switch-setting input[type="checkbox"]:focus-visible,
+.availability-break-toggle input[type="checkbox"]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .availability-date-adder {
+    grid-template-columns: 1fr;
+  }
+
+  .availability-date-adder .secondary-action {
+    width: 100%;
+  }
+}
+
+/* Acabamento temático final: controles e sombras não carregam tons do tema Terra. */
+:root {
+  --shadow: 0 24px 60px color-mix(in srgb, var(--accent-dark) 13%, transparent);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.icon-button {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.primary-action {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.secondary-action {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--accent-dark);
+}
+
+.secondary-action:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 18%, var(--surface));
+}
+
+.search-field {
+  background: var(--surface);
+  border-color: var(--field-border);
+}
+
+.agenda-mode-switch button.is-active {
+  background: var(--surface);
+  color: var(--accent-dark);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--accent-dark) 8%, transparent);
+}
+
+/* Ajustes priorizam uma única coluna até desktop amplo. */
+.settings-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 920px) {
+  .settings-grid {
+    grid-template-columns: minmax(300px, .82fr) minmax(0, 1.18fr);
+  }
+}
+
+/* v16 — refinamento financeiro e telas de autenticação */
+
+/* Financeiro: reduz a escala tipográfica para ganhar espaço sem perder hierarquia. */
+#view-finance .finance-intro h2 {
+  font-size: clamp(1.65rem, 6vw, 2.65rem);
+  line-height: 1.02;
+  letter-spacing: -.04em;
+}
+
+#view-finance .finance-hero-kicker {
+  margin-top: 14px;
+  font-size: .72rem;
+}
+
+#view-finance .finance-hero-value {
+  margin-top: 5px;
+  font-size: clamp(1.85rem, 8vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+
+#view-finance .finance-hero-status {
+  margin-top: 10px;
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+#view-finance .finance-chart-heading h3,
+#view-finance .finance-section-header h3,
+#view-finance .section-heading h3 {
+  font-size: 1rem;
+}
+
+#view-finance .finance-card-value strong {
+  font-size: clamp(1.2rem, 5.5vw, 1.65rem);
+  letter-spacing: -.04em;
+}
+
+/* O wrapper é apenas layout. O fundo temático pertence somente ao resumo escuro. */
+#view-finance .finance-dashboard-hero,
+#view-finance .finance-dashboard-hero.is-neutral,
+#view-finance .finance-dashboard-hero.is-positive,
+#view-finance .finance-dashboard-hero.is-negative {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+#view-finance .finance-hero-copy {
+  background:
+    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--accent-soft) 18%, transparent), transparent 34%),
+    linear-gradient(145deg, var(--accent-dark), color-mix(in srgb, var(--accent-dark) 72%, var(--accent)));
+  box-shadow: 0 18px 42px color-mix(in srgb, var(--accent-dark) 18%, transparent);
+}
+
+/* Indicadores separados em fluxo financeiro e desempenho. */
+#view-finance .finance-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 0;
+}
+
+#view-finance .finance-indicator-group {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+#view-finance .finance-indicator-flow {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#view-finance .finance-indicator-flow #financeRevenueCard {
+  grid-column: 1 / -1;
+}
+
+#view-finance .finance-indicator-performance {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#view-finance .finance-indicator-divider {
+  height: 1px;
+  background: var(--finance-border-soft);
+}
+
+#view-finance .finance-card {
+  min-height: 112px;
+  padding: 12px;
+  gap: 9px;
+  border-radius: 16px;
+}
+
+#view-finance .finance-card-head {
+  gap: 8px;
+}
+
+#view-finance .finance-icon-shell {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 10px;
+}
+
+#view-finance .finance-card .ui-icon {
+  width: 16px;
+  height: 16px;
+}
+
+#view-finance .finance-label {
+  font-size: .72rem;
+  line-height: 1.25;
+}
+
+#view-finance .finance-card-head small {
+  margin-top: 3px;
+  font-size: .62rem;
+  line-height: 1.35;
+}
+
+/* Remove spans herdados das versões anteriores agora que os cards vivem em grupos. */
+#view-finance #financeNetCard,
+#view-finance #financeTicketCard {
+  grid-column: auto;
+}
+
+@media (min-width: 760px) {
+  #view-finance .finance-summary {
+    grid-template-columns: minmax(0, 1.45fr) 1px minmax(0, .95fr);
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  #view-finance .finance-indicator-flow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #view-finance .finance-indicator-flow #financeRevenueCard {
+    grid-column: auto;
+  }
+
+  #view-finance .finance-indicator-divider {
+    width: 1px;
+    height: auto;
+    min-height: 100%;
+  }
+
+  #view-finance .finance-card {
+    min-height: 128px;
+    padding: 14px;
+  }
+}
+
+/* Login: switch próprio, sem herdar dimensões do input global. */
+.login-remember {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.login-remember input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 0 0 46px;
+  border: 1px solid color-mix(in srgb, var(--login-accent-dark) 22%, transparent) !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--login-accent-dark) 13%, #fff) !important;
+  position: relative;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.login-remember input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--login-accent-dark) 20%, transparent);
+  transform: translateX(0);
+  transition: transform .2s ease;
+}
+
+.login-remember input[type="checkbox"]:checked {
+  background: var(--login-accent) !important;
+  border-color: var(--login-accent) !important;
+}
+
+.login-remember input[type="checkbox"]:checked::after {
+  transform: translateX(20px);
+}
+
+.login-remember input[type="checkbox"]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--login-accent) 22%, transparent);
+  outline-offset: 2px;
+}
+
+/* Primeiro acesso usa a mesma identidade neutra/da marca do login, não o tema Terra do painel. */
+.onboarding-screen {
+  --onboarding-accent: var(--login-accent);
+  --onboarding-dark: var(--login-accent-dark);
+  --onboarding-soft: var(--login-accent-soft);
+}
+
+.onboarding-screen .onboarding-form-panel {
+  background: #fff;
+}
+
+.onboarding-screen .onboarding-form .eyebrow {
+  color: var(--onboarding-accent);
+}
+
+.onboarding-screen .onboarding-copy .eyebrow {
+  color: rgba(255,255,255,.62);
+}
+
+.onboarding-screen .form-stack label {
+  color: color-mix(in srgb, var(--onboarding-dark) 70%, #777);
+}
+
+.onboarding-screen input,
+.onboarding-screen select,
+.onboarding-screen textarea {
+  background: #fff;
+  border-color: color-mix(in srgb, var(--onboarding-dark) 28%, transparent);
+}
+
+.onboarding-screen input:focus,
+.onboarding-screen select:focus,
+.onboarding-screen textarea:focus {
+  border-color: var(--onboarding-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--onboarding-accent) 14%, transparent);
+}
+
+.onboarding-screen .primary-action {
+  color: #fff;
+  background: var(--onboarding-dark);
+  border: 1px solid var(--onboarding-dark);
+}
+
+.onboarding-screen .primary-action:hover {
+  background: color-mix(in srgb, var(--onboarding-dark) 82%, var(--onboarding-accent));
+}
+
+.onboarding-screen .secondary-action,
+.onboarding-screen .icon-button {
+  color: var(--onboarding-dark);
+  border-color: color-mix(in srgb, var(--onboarding-dark) 24%, transparent);
+  background: #fff;
+}
+
+.onboarding-screen .secondary-action:hover,
+.onboarding-screen .icon-button:hover {
+  border-color: var(--onboarding-accent);
+  background: var(--onboarding-soft);
+}
+
+.onboarding-screen .login-error {
+  color: #9d494d;
+}
+
+@media (max-width: 520px) {
+  #view-finance .finance-hero-copy {
+    padding: 17px 15px;
+  }
+
+  #view-finance .finance-hero-chips {
+    margin-top: 16px;
+  }
+
+  #view-finance .finance-chart-card,
+  #view-finance .finance-summary-section {
+    border-radius: 18px;
+  }
 }
