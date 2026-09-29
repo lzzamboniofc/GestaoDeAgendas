@@ -120,8 +120,8 @@
         <button class="nav-item" data-view="agenda" aria-label="Agenda" title="Agenda">
           <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></span><span>Agenda</span>
         </button>
-        <button class="nav-item" data-view="clients" aria-label="Clientes" title="Clientes">
-          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span>Clientes</span>
+        <button class="nav-item" data-view="clients" aria-label="Cadastros" title="Cadastros">
+          <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 13h3M13 13h3M8 17h3"/></svg></span><span>Cadastros</span>
         </button>
         <button class="nav-item" data-view="finance" aria-label="Financeiro" title="Financeiro">
           <span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M3 9h18M16 14h2"/><path d="M5 6V4h12"/></svg></span><span>Financeiro</span>
@@ -217,15 +217,49 @@
         </div>
       </section>
 
-      <section class="view" id="view-clients" data-title="Clientes">
-        <div class="page-toolbar">
-          <label class="search-field"><span><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><input id="clientSearch" type="search" placeholder="Buscar cliente ou telefone" /></label>
-          <button class="primary-action" data-action="new-client">+ Novo cliente</button>
+      <section class="view" id="view-clients" data-title="Cadastros">
+        <div class="registry-header">
+          <div><p class="eyebrow">Cadastros</p><h2>Dados do negócio</h2><p class="muted-copy">Clientes, serviços, pacotes e formas de pagamento em um só lugar.</p></div>
+          <div class="registry-tabs" role="tablist" aria-label="Tipos de cadastro">
+            <button type="button" class="registry-tab is-active" data-registry-tab="clients" role="tab" aria-selected="true">Clientes</button>
+            <button type="button" class="registry-tab" data-registry-tab="services" role="tab" aria-selected="false">Serviços</button>
+            <button type="button" class="registry-tab" data-registry-tab="packages" role="tab" aria-selected="false">Pacotes</button>
+            <button type="button" class="registry-tab" data-registry-tab="payments" role="tab" aria-selected="false">Pagamentos</button>
+          </div>
         </div>
-        <div class="clients-layout">
-          <section class="client-list-panel"><div class="client-list" id="clientList"></div></section>
-          <section class="client-detail-panel" id="clientDetail"></section>
-        </div>
+
+        <section class="registry-panel is-active" data-registry-panel="clients">
+          <div class="page-toolbar registry-toolbar">
+            <label class="search-field"><span><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><input id="clientSearch" type="search" placeholder="Buscar cliente ou telefone" /></label>
+            <button class="primary-action" data-action="new-client">+ Novo cliente</button>
+          </div>
+          <div class="clients-layout">
+            <section class="client-list-panel"><div class="client-list" id="clientList"></div></section>
+            <section class="client-detail-panel" id="clientDetail"></section>
+          </div>
+        </section>
+
+        <section class="registry-panel" data-registry-panel="services" hidden>
+          <section class="registry-card">
+            <div class="section-heading service-heading"><div><p class="eyebrow">Serviços</p><h3>Valores e serviços</h3><p class="muted-copy compact-copy">Cadastre o que você oferece, com valor e duração.</p></div><button class="secondary-action" id="addServiceBtn">+ Novo serviço</button></div>
+            <div id="servicesSettings" class="service-settings-list"></div>
+          </section>
+        </section>
+
+
+        <section class="registry-panel" data-registry-panel="packages" hidden>
+          <section class="registry-card">
+            <div class="section-heading service-heading"><div><p class="eyebrow">Pacotes</p><h3>Modelos de pacotes</h3><p class="muted-copy compact-copy">Monte combinações de serviços, quantidades, valor e validade para vender aos clientes.</p></div><button class="secondary-action" id="addPackageBtn">+ Novo pacote</button></div>
+            <div id="packagesList" class="packages-list"></div>
+          </section>
+        </section>
+
+        <section class="registry-panel" data-registry-panel="payments" hidden>
+          <section class="registry-card">
+            <div class="section-heading service-heading"><div><p class="eyebrow">Financeiro</p><h3>Formas de pagamento</h3><p class="muted-copy compact-copy">Defina quais opções aparecem ao dar baixa em um atendimento.</p></div><button class="secondary-action" id="addPaymentMethodBtn">+ Nova forma</button></div>
+            <div id="paymentMethodsList" class="payment-methods-list"></div>
+          </section>
+        </section>
       </section>
 
       <section class="view" id="view-finance" data-title="Financeiro">
@@ -438,11 +472,6 @@
             </div>
           </section>
 
-          <section class="settings-section full-span">
-            <div class="section-heading service-heading"><div><p class="eyebrow">Serviços</p><h3>Valores e serviços</h3></div><button class="secondary-action" id="addServiceBtn">+ Novo serviço</button></div>
-            <div id="servicesSettings" class="service-settings-list"></div>
-          </section>
-
           <section class="settings-section full-span workspace-settings">
             <div class="section-heading service-heading">
               <div><p class="eyebrow">Negócio</p><h3>Identidade do espaço</h3></div>
@@ -476,18 +505,36 @@
       <button class="nav-item is-active" data-view="today"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Hoje</span></button>
       <button class="nav-item" data-view="agenda"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg></span><span>Agenda</span></button>
       <button class="nav-item nav-create" data-action="new-appointment" aria-label="Novo atendimento"><span>+</span></button>
-      <button class="nav-item" data-view="clients"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span>Clientes</span></button>
+      <button class="nav-item" data-view="clients"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 13h3M13 13h3M8 17h3"/></svg></span><span>Cadastros</span></button>
       <button class="nav-item" data-view="finance"><span class="nav-icon-wrap"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M3 9h18M16 14h2"/></svg></span><span>Financeiro</span></button>
     </nav>
   </div>
 
   <dialog class="sheet-dialog" id="appointmentDialog">
     <form id="appointmentForm" class="sheet-form">
-      <div class="dialog-heading"><div><p class="eyebrow">Agenda</p><h2>Novo atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="appointmentDialog" data-cancel-message="Cadastro de novo atendimento cancelado." aria-label="Fechar">×</button></div>
+      <div class="dialog-heading"><div><p class="eyebrow">Agenda</p><h2 id="appointmentDialogTitle">Novo atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="appointmentDialog" data-cancel-message="Cadastro de novo atendimento cancelado." aria-label="Fechar">×</button></div>
       <div class="form-stack">
         <label>Cliente<select id="appointmentClient" required></select></label>
-        <label>Serviço<select id="appointmentService" required></select></label>
-        <div class="form-row"><label>Data<input id="appointmentDate" type="date" required /></label><label>Horário<span class="appointment-time-free-wrap"><input id="appointmentTime" type="time" required /></span><span class="appointment-time-slot-wrap" id="appointmentTimeSlotWrap" hidden><select id="appointmentTimeSlot"></select><small class="field-help" id="appointmentTimeHelp"></small></span></label></div>
+        <div class="appointment-debt-hint" id="appointmentDebtHint" hidden></div>
+        <label id="appointmentTypeWrap">Tipo de lançamento<select id="appointmentType"><option value="service">Serviço avulso</option><option value="package">Pacote</option></select></label>
+
+        <div id="appointmentServiceFields" class="appointment-mode-fields">
+          <label>Serviço<select id="appointmentService"></select></label><div class="appointment-package-edit-hint" id="appointmentPackageEditHint" hidden></div>
+          <div class="form-row"><label>Data<input id="appointmentDate" type="date" /></label><label>Horário<span class="appointment-time-free-wrap"><input id="appointmentTime" type="time" /></span><span class="appointment-time-slot-wrap" id="appointmentTimeSlotWrap" hidden><select id="appointmentTimeSlot"></select><small class="field-help" id="appointmentTimeHelp"></small></span></label></div>
+          <label class="toggle-item appointment-manual-time" id="appointmentManualTimeWrap" hidden><span><strong>Ajustar horário manualmente</strong><small>Use em caso de atraso ou encaixe fora da grade.</small></span><input id="appointmentManualTimeOverride" type="checkbox" /></label>
+        </div>
+
+        <div id="appointmentPackageFields" class="appointment-mode-fields" hidden>
+          <label>Pacote<select id="appointmentPackageTemplate"></select></label>
+          <div id="appointmentPackagePreview" class="package-purchase-preview"></div>
+          <div class="form-row"><label>Data da venda<input id="appointmentPackagePurchaseDate" type="date" /></label><label>Situação do pagamento<select id="appointmentPackagePaymentStatus"><option value="received">Recebido</option><option value="pending">Pendente</option></select></label></div>
+          <label id="appointmentPackagePaymentMethodWrap">Forma de pagamento<select id="appointmentPackagePaymentMethod"></select></label>
+          <div class="package-schedule-builder">
+            <div class="package-schedule-heading"><div><strong>Dias do pacote</strong><small>Defina quando o cliente virá. Cada visita será criada automaticamente na agenda.</small></div></div>
+            <div id="appointmentPackageSchedule" class="package-schedule-list"></div>
+          </div>
+        </div>
+
         <label>Status<select id="appointmentStatus"><option value="confirmed">Confirmado</option><option value="waiting">Aguardando</option></select></label>
         <label>Observação<textarea id="appointmentNotes" rows="3" placeholder="Opcional"></textarea></label>
       </div>
@@ -531,12 +578,58 @@
     </form>
   </dialog>
 
+  <dialog class="sheet-dialog" id="packageDialog">
+    <form id="packageForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Pacotes</p><h2 id="packageDialogTitle">Novo pacote</h2></div><button type="button" class="icon-button" data-close-dialog="packageDialog" aria-label="Fechar">×</button></div>
+      <div class="form-stack">
+        <label>Nome do pacote<input id="packageName" type="text" maxlength="80" required placeholder="Ex.: Pacote mensal" /></label>
+        <label>Descrição<input id="packageDescription" type="text" maxlength="140" placeholder="Ex.: 4 atendimentos de cada serviço no mês" /></label>
+        <div class="form-row"><label>Valor do pacote<input id="packagePrice" type="number" min="0" step="0.01" required /></label><label>Validade em dias<input id="packageValidityDays" type="number" min="1" step="1" value="30" required /></label></div>
+        <label>Frequência sugerida <span class="optional-label">opcional</span><input id="packageFrequency" type="text" maxlength="60" placeholder="Ex.: 1 vez por semana" /></label>
+        <div class="package-services-field">
+          <div><strong>Serviços incluídos</strong><small>Defina quantas utilizações de cada serviço fazem parte do pacote. Ex.: 4× Serviço A + 4× Serviço B gera 4 visitas, com os dois serviços em cada visita.</small></div>
+          <div id="packageServiceRows" class="package-service-rows"></div>
+        </div>
+      </div>
+      <div class="dialog-actions service-dialog-actions"><button type="button" class="danger-action" id="deletePackageBtn" hidden>Excluir pacote</button><span></span><button type="button" class="secondary-action" data-close-dialog="packageDialog">Cancelar</button><button type="submit" class="primary-action">Salvar pacote</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet-dialog" id="packagePurchaseDialog">
+    <form id="packagePurchaseForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Cliente</p><h2>Adicionar pacote</h2></div><button type="button" class="icon-button" data-close-dialog="packagePurchaseDialog" aria-label="Fechar">×</button></div>
+      <div class="decision-summary"><span id="packagePurchaseClientName">Cliente</span><strong id="packagePurchaseAmount">R$ 0</strong></div>
+      <div class="form-stack">
+        <label>Pacote<select id="packagePurchaseTemplate" required></select></label>
+        <div id="packagePurchasePreview" class="package-purchase-preview"></div>
+        <div class="form-row"><label>Data da compra<input id="packagePurchaseDate" type="date" required /></label><label>Situação do pagamento<select id="packagePurchasePaymentStatus"><option value="received">Recebido</option><option value="pending">Pendente</option></select></label></div>
+        <label id="packagePurchasePaymentMethodWrap">Forma de pagamento<select id="packagePurchasePaymentMethod"></select></label>
+      </div>
+      <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog="packagePurchaseDialog">Cancelar</button><button type="submit" class="primary-action">Adicionar pacote</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet-dialog" id="paymentMethodDialog">
+    <form id="paymentMethodForm" class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Cadastros</p><h2 id="paymentMethodDialogTitle">Nova forma de pagamento</h2></div><button type="button" class="icon-button" data-close-dialog="paymentMethodDialog" aria-label="Fechar">×</button></div>
+      <div class="form-stack">
+        <label>Nome<input id="paymentMethodName" type="text" maxlength="40" required placeholder="Ex.: Pix" /></label>
+        <label class="toggle-item payment-method-active-row"><span><strong>Disponível para uso</strong><small>Quando desativada, deixa de aparecer nas novas baixas.</small></span><input id="paymentMethodActive" type="checkbox" checked /></label>
+      </div>
+      <div class="dialog-actions service-dialog-actions"><button type="button" class="danger-action" id="deletePaymentMethodBtn" hidden>Excluir</button><span></span><button type="button" class="secondary-action" data-close-dialog="paymentMethodDialog">Cancelar</button><button type="submit" class="primary-action">Salvar</button></div>
+    </form>
+  </dialog>
+
   <dialog class="sheet-dialog decision-dialog" id="paymentDialog">
     <div class="sheet-form">
       <div class="dialog-heading"><div><p class="eyebrow">Financeiro</p><h2 id="paymentDialogTitle">Concluir atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="paymentDialog" aria-label="Fechar">×</button></div>
       <div class="decision-summary"><span id="paymentClientName">Cliente</span><strong id="paymentAmount">R$ 0</strong></div>
-      <h3 class="decision-question">Dinheiro recebido?</h3>
-      <p class="muted-copy">Se ainda não recebeu, deixe como pendente. O aviso continuará aparecendo no Financeiro até a baixa.</p>
+      <section class="package-use-option" id="paymentPackageOption" hidden>
+        <div><strong>Usar saldo de pacote</strong><p id="paymentPackageCopy">Este cliente possui pacote disponível para este serviço.</p></div>
+        <button type="button" class="secondary-action package-use-button" id="usePackageBtn">Usar pacote</button>
+      </section>
+      <h3 class="decision-question" id="paymentQuestion">Dinheiro recebido?</h3>
+      <p class="muted-copy" id="paymentHelpText">Se ainda não recebeu, deixe como pendente. O aviso continuará aparecendo no Financeiro até a baixa.</p>
       <label class="standalone-label" id="paymentMethodWrap">Forma de pagamento<select id="paymentMethod"></select></label>
       <div class="dialog-actions"><button type="button" class="secondary-action" id="markPaymentPendingBtn">Pendente</button><button type="button" class="primary-action" id="markPaymentReceivedBtn">Sim, recebido</button></div>
     </div>
@@ -544,11 +637,21 @@
 
   <dialog class="sheet-dialog decision-dialog" id="cancelDialog">
     <div class="sheet-form">
-      <div class="dialog-heading"><div><p class="eyebrow">Agenda</p><h2>Cancelar atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="cancelDialog" aria-label="Fechar">×</button></div>
+      <div class="dialog-heading"><div><p class="eyebrow">Agenda</p><h2 id="cancelDialogTitle">Cancelar atendimento</h2></div><button type="button" class="icon-button" data-close-dialog="cancelDialog" aria-label="Fechar">×</button></div>
       <div class="decision-summary"><span id="cancelClientName">Cliente</span><strong id="cancelAmount">R$ 0</strong></div>
-      <h3 class="decision-question">Dinheiro foi devolvido?</h3>
-      <p class="muted-copy">Se já houver um recebimento registrado, “Sim” retira o valor do financeiro e “Não” mantém o valor recebido.</p>
+      <h3 class="decision-question" id="cancelQuestion">Dinheiro foi devolvido?</h3>
+      <p class="muted-copy" id="cancelHelpText">Se já houver um recebimento registrado, “Sim” retira o valor do financeiro e “Não” mantém o valor recebido.</p>
       <div class="dialog-actions"><button type="button" class="secondary-action" id="cancelNoRefundBtn">Não, manter</button><button type="button" class="primary-action" id="cancelRefundBtn">Sim, devolvido</button></div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet-dialog decision-dialog" id="debtWarningDialog">
+    <div class="sheet-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Atenção</p><h2>Pendência financeira</h2></div><button type="button" class="icon-button" data-close-dialog="debtWarningDialog" aria-label="Fechar">×</button></div>
+      <div class="decision-summary debt-warning-summary"><span id="debtWarningClientName">Cliente</span><strong id="debtWarningAmount">R$ 0</strong></div>
+      <div class="debt-warning-copy"><strong id="debtWarningCount">Pendência sem baixa</strong><p>Existem valores anteriores que ainda não foram marcados como recebidos. Confira antes de criar um novo atendimento.</p></div>
+      <div class="debt-warning-items" id="debtWarningItems"></div>
+      <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog="debtWarningDialog">Voltar</button><button type="button" class="primary-action" id="debtWarningContinueBtn">Agendar mesmo assim</button></div>
     </div>
   </dialog>
 

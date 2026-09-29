@@ -81,3 +81,36 @@ Quando os horários definidos estão ativos, o modal de novo atendimento mostra 
 - Dias de atendimento funcionam independentemente da grade de horários: com a grade desligada, o horário é livre, mas dias fechados continuam bloqueados.
 - Datas específicas podem ser bloqueadas para folgas, feriados e compromissos.
 - Switch de pausa/almoço usa o mesmo componente visual dos demais switches.
+
+## v17 — Cadastros
+
+- A antiga área **Clientes** passou a se chamar **Cadastros**.
+- Cadastros reúne três abas: **Clientes**, **Serviços** e **Pagamentos**.
+- Serviços saíram de Ajustes e agora ficam próximos dos demais dados operacionais.
+- Formas de pagamento podem ser adicionadas, editadas, ativadas/desativadas e removidas.
+- A baixa de um atendimento usa somente as formas de pagamento ativas cadastradas nessa área.
+- Ajustes ficou reservado para regras de funcionamento, aparência, agenda, horários, identidade e acesso.
+
+## v19 — Pacotes
+
+A área **Cadastros** agora inclui **Pacotes**. Um pacote é um modelo comercial com nome, valor, validade, frequência sugerida e uma ou mais quantidades de serviços.
+
+Na ficha do cliente é possível adicionar um pacote, registrar o pagamento como recebido ou pendente e acompanhar o saldo restante de cada serviço. Ao concluir um atendimento, quando existir saldo válido para aquele serviço, o painel oferece **Usar pacote**. Essa baixa consome uma utilização e não cria uma nova receita, evitando contar o mesmo dinheiro duas vezes.
+
+A receita do pacote entra no Financeiro uma única vez, na data da compra/recebimento. Pacotes pendentes aparecem junto das demais pendências. Se um atendimento pago com pacote for cancelado, o sistema permite devolver a utilização ao saldo ou mantê-la consumida.
+
+
+## v19
+- Edição e reagendamento de atendimentos em aberto.
+- Ajuste manual de horário na edição para atrasos/encaixes fora da grade.
+- Aviso de pendências financeiras antes de criar novo atendimento, com opção de continuar.
+
+## v20 — Pacotes dentro do Novo atendimento
+
+- Pacotes continuam sendo modelos cadastrados em **Cadastros → Pacotes**.
+- A venda/agendamento do pacote agora acontece em **Novo atendimento**, escolhendo `Serviço avulso` ou `Pacote`.
+- Ao selecionar um pacote, o sistema transforma as quantidades em visitas. Ex.: `4× Serviço A + 4× Serviço B` gera 4 visitas contendo os dois serviços.
+- Cada visita recebe data e horário próprios antes de salvar e é criada automaticamente na Agenda.
+- Com grade de horários ativa, cada visita respeita duração combinada, expediente, pausas e conflitos existentes.
+- O pacote entra no Financeiro uma única vez, na venda; as visitas posteriores consomem saldo sem duplicar receita.
+- Na ficha do cliente, o botão de inclusão virou **Agendar pacote**, direcionando para o mesmo fluxo de Novo atendimento.

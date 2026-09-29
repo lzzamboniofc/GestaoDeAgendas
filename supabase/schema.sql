@@ -35,6 +35,17 @@ create table if not exists public.services (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.payment_methods (
+  id uuid primary key default gen_random_uuid(),
+  workspace_id uuid not null references public.workspaces(id) on delete cascade,
+  name text not null,
+  active boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (workspace_id, name)
+);
+
 create table if not exists public.clients (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
@@ -47,20 +58,77 @@ create table if not exists public.clients (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.package_templates (
+  id uuid primary key default gen_random_uuid(),
+  workspace_id uuid not null references public.workspaces(id) on delete cascade,
+  name text not null,
+  description text,
+  price numeric(10,2) not null default 0 check (price >= 0),
+  validity_days integer not null default 30 check (validity_days > 0),
+  frequency_label text,
+  active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.package_template_items (
+  id uuid primary key default gen_random_uuid(),
+  package_template_id uuid not null references public.package_templates(id) on delete cascade,
+  service_id uuid not null references public.services(id) on delete restrict,
+  quantity integer not null check (quantity > 0),
+  unique (package_template_id, service_id)
+);
+
+create table if not exists public.client_packages (
+  id uuid primary key default gen_random_uuid(),
+  workspace_id uuid not null references public.workspaces(id) on delete cascade,
+  client_id uuid not null references public.clients(id) on delete restrict,
+  package_template_id uuid references public.package_templates(id) on delete set null,
+  name_snapshot text not null,
+  description_snapshot text,
+  price_snapshot numeric(10,2) not null default 0 check (price_snapshot >= 0),
+  purchase_date date not null,
+  expires_at date not null,
+  frequency_snapshot text,
+  payment_status text not null default 'pending' check (payment_status in ('received','pending','refunded','not_paid')),
+  payment_method text,
+  paid_at timestamptz,
+  cancelled boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.client_package_items (
+  id uuid primary key default gen_random_uuid(),
+  client_package_id uuid not null references public.client_packages(id) on delete cascade,
+  service_id uuid references public.services(id) on delete set null,
+  service_name_snapshot text not null,
+  total_uses integer not null check (total_uses > 0),
+  used_uses integer not null default 0 check (used_uses >= 0 and used_uses <= total_uses),
+  unique (client_package_id, service_id)
+);
+
 create table if not exists public.appointments (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   client_id uuid not null references public.clients(id) on delete restrict,
   service_id uuid not null references public.services(id) on delete restrict,
+  client_package_id uuid references public.client_packages(id) on delete set null,
+  package_name_snapshot text,
+  package_visit_number integer check (package_visit_number is null or package_visit_number > 0),
+  package_visit_total integer check (package_visit_total is null or package_visit_total > 0),
+  package_visit_items jsonb not null default '[]'::jsonb,
+  package_usage_items jsonb not null default '[]'::jsonb,
   starts_at timestamptz not null,
   ends_at timestamptz not null,
   status text not null default 'confirmed' check (status in ('waiting','confirmed','done','cancelled','no_show')),
   notes text,
   price_snapshot numeric(10,2) not null default 0 check (price_snapshot >= 0),
-  payment_status text check (payment_status is null or payment_status in ('received','pending','refunded','not_paid')),
-  payment_method text check (payment_method is null or payment_method in ('pix','cash','card','other')),
+  payment_status text check (payment_status is null or payment_status in ('received','pending','refunded','not_paid','package','package_reversed')),
+  payment_method text,
   refund_status text check (refund_status is null or refund_status in ('refunded','not_refunded')),
   paid_at timestamptz,
+  reschedule_count integer not null default 0 check (reschedule_count >= 0),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   check (ends_at > starts_at)
@@ -97,6 +165,9 @@ create table if not exists public.workspace_settings (
 );
 
 create index if not exists clients_workspace_name_idx on public.clients (workspace_id, full_name);
+create index if not exists package_templates_workspace_idx on public.package_templates (workspace_id, active);
+create index if not exists client_packages_client_idx on public.client_packages (client_id, purchase_date desc);
+create index if not exists client_packages_workspace_date_idx on public.client_packages (workspace_id, purchase_date desc);
 create index if not exists appointments_workspace_starts_at_idx on public.appointments (workspace_id, starts_at);
 create index if not exists appointments_client_idx on public.appointments (client_id, starts_at desc);
 create index if not exists expenses_workspace_date_idx on public.expenses (workspace_id, expense_date desc);
@@ -105,6 +176,11 @@ create index if not exists blocked_times_workspace_starts_at_idx on public.block
 alter table public.workspaces enable row level security;
 alter table public.workspace_members enable row level security;
 alter table public.services enable row level security;
+alter table public.payment_methods enable row level security;
+alter table public.package_templates enable row level security;
+alter table public.package_template_items enable row level security;
+alter table public.client_packages enable row level security;
+alter table public.client_package_items enable row level security;
 alter table public.clients enable row level security;
 alter table public.appointments enable row level security;
 alter table public.blocked_times enable row level security;
@@ -153,6 +229,38 @@ using (exists (select 1 from public.workspace_members m where m.workspace_id = s
 with check (exists (select 1 from public.workspace_members m where m.workspace_id = services.workspace_id and m.user_id = (select auth.uid())));
 create policy "services_member_delete" on public.services for delete to authenticated
 using (exists (select 1 from public.workspace_members m where m.workspace_id = services.workspace_id and m.user_id = (select auth.uid())));
+
+create policy "payment_methods_member_select" on public.payment_methods for select to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = payment_methods.workspace_id and m.user_id = (select auth.uid())));
+create policy "payment_methods_member_insert" on public.payment_methods for insert to authenticated
+with check (exists (select 1 from public.workspace_members m where m.workspace_id = payment_methods.workspace_id and m.user_id = (select auth.uid())));
+create policy "payment_methods_member_update" on public.payment_methods for update to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = payment_methods.workspace_id and m.user_id = (select auth.uid())))
+with check (exists (select 1 from public.workspace_members m where m.workspace_id = payment_methods.workspace_id and m.user_id = (select auth.uid())));
+create policy "payment_methods_member_delete" on public.payment_methods for delete to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = payment_methods.workspace_id and m.user_id = (select auth.uid())));
+
+create policy "package_templates_member_select" on public.package_templates for select to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = package_templates.workspace_id and m.user_id = (select auth.uid())));
+create policy "package_templates_member_insert" on public.package_templates for insert to authenticated
+with check (exists (select 1 from public.workspace_members m where m.workspace_id = package_templates.workspace_id and m.user_id = (select auth.uid())));
+create policy "package_templates_member_update" on public.package_templates for update to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = package_templates.workspace_id and m.user_id = (select auth.uid())))
+with check (exists (select 1 from public.workspace_members m where m.workspace_id = package_templates.workspace_id and m.user_id = (select auth.uid())));
+create policy "package_templates_member_delete" on public.package_templates for delete to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = package_templates.workspace_id and m.user_id = (select auth.uid())));
+
+create policy "package_template_items_member_all" on public.package_template_items for all to authenticated
+using (exists (select 1 from public.package_templates p join public.workspace_members m on m.workspace_id = p.workspace_id where p.id = package_template_items.package_template_id and m.user_id = (select auth.uid())))
+with check (exists (select 1 from public.package_templates p join public.workspace_members m on m.workspace_id = p.workspace_id where p.id = package_template_items.package_template_id and m.user_id = (select auth.uid())));
+
+create policy "client_packages_member_all" on public.client_packages for all to authenticated
+using (exists (select 1 from public.workspace_members m where m.workspace_id = client_packages.workspace_id and m.user_id = (select auth.uid())))
+with check (exists (select 1 from public.workspace_members m where m.workspace_id = client_packages.workspace_id and m.user_id = (select auth.uid())));
+
+create policy "client_package_items_member_all" on public.client_package_items for all to authenticated
+using (exists (select 1 from public.client_packages p join public.workspace_members m on m.workspace_id = p.workspace_id where p.id = client_package_items.client_package_id and m.user_id = (select auth.uid())))
+with check (exists (select 1 from public.client_packages p join public.workspace_members m on m.workspace_id = p.workspace_id where p.id = client_package_items.client_package_id and m.user_id = (select auth.uid())));
 
 create policy "clients_member_select" on public.clients for select to authenticated
 using (exists (select 1 from public.workspace_members m where m.workspace_id = clients.workspace_id and m.user_id = (select auth.uid())));
@@ -206,6 +314,11 @@ with check (exists (select 1 from public.workspace_members m where m.workspace_i
 grant select, insert, update, delete on public.workspaces to authenticated;
 grant select, insert, update, delete on public.workspace_members to authenticated;
 grant select, insert, update, delete on public.services to authenticated;
+grant select, insert, update, delete on public.payment_methods to authenticated;
+grant select, insert, update, delete on public.package_templates to authenticated;
+grant select, insert, update, delete on public.package_template_items to authenticated;
+grant select, insert, update, delete on public.client_packages to authenticated;
+grant select, insert, update, delete on public.client_package_items to authenticated;
 grant select, insert, update, delete on public.clients to authenticated;
 grant select, insert, update, delete on public.appointments to authenticated;
 grant select, insert, update, delete on public.blocked_times to authenticated;
